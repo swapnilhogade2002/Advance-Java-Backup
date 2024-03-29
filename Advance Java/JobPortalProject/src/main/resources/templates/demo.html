@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="ISO-8859-1">
+	<title>Insert title here</title>
+</head>
+
+<body>
+	<!-- Iterate over filtered job postings -->
+
+	<h1>result</h1>
+	<div th:each="jobPosting : ${jobPostings}">
+		<!-- Display job posting details -->
+		<h5 th:text="${jobPosting.jobType}"></h5>
+		<p th:text="${jobPosting.location}"></p>
+		<!-- Add other job posting details as needed -->
+	</div>
+
+</body>
+
+</html>

@@ -1,0 +1,13 @@
+package com.spring.jdbc.dao;
+
+import com.spring.jdbc.entities.Student;
+
+public interface StudentDao {
+	public int insert(Student student);
+	public int change(Student student);
+	public int delete(int studentID);
+	
+//	selecting single obj from jdbc
+	public Student getStudent(int ststudentID);
+	String query= "select * from student where id= '"
+}

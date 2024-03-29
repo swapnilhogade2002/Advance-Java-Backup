@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+	<!-- Add your head content here -->
+	<style>
+		.header-content {
+			color: #00B074;
+			font-weight: 600;
+			text-decoration: underline;
+		}
+
+		.btn-info {
+			background-color: #00B074;
+			color: white;
+		}
+	</style>
+</head>
+
+<body>
+	<!-- Add your navigation or header content here -->
+
+	<div class="container mt-4">
+		<h4 class="header-content">Edit Job</h4>
+
+		<!-- Job edit form -->
+		<form th:action="@{'/company/edit-job/' + ${job.id}}" method="post">
+			<div class="form-group">
+				<label for="jobTitle">Job Title:</label>
+				<input type="text" class="form-control" id="jobTitle" th:field="${job.profile}" required>
+			</div>
+
+			<!-- Include other job fields as needed -->
+
+			<div class="form-group">
+				<label for="jobLocation">Job Location:</label>
+				<input type="text" class="form-control" id="jobLocation" th:field="${job.location}" required>
+			</div>
+
+			<div class="form-group">
+				<label for="jobWorkMode">Job Work-Mode:</label>
+				<input type="text" class="form-control" id="jobWorkMode" th:field="${job.workMode}" required>
+			</div>
+
+			<div class="form-group">
+				<label for="jobType">Job Type:</label>
+				<input type="text" class="form-control" id="jobType" th:field="${job.jobType}" required>
+			</div>
+
+			<div class="form-group">
+				<label for="jobExperience">Job Experience (in years):</label>
+				<input type="number" class="form-control" id="jobExperience" th:field="${job.experience}" required>
+			</div>
+
+			<div class="form-group">
+				<label for="jobCtc">CTC (in lakh):</label>
+				<input type="number" class="form-control" id="jobCtc" th:field="${job.ctc}" required>
+			</div>
+
+			<div class="form-group">
+				<label for="jobDetail">Job Detail</label>
+				<textarea class="form-control" id="jobDetail" name="detail" th:field="${job.detail}"
+					required></textarea>
+			</div>
+
+
+
+			<button type="submit" class="btn btn-info">Update Job</button>
+			<a th:href="@{'/company/view-jobs'}" class="btn btn-info">Back to home</a>
+		</form>
+	</div>
+
+
+
+</body>
+
+</html>

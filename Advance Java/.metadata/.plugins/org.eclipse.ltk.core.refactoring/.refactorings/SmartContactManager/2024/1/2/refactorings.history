@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Rename resource &apos;SmartContactManager/src/main/resources/templates/user/update-form.html&apos; to &apos;update-contact.html&apos;" description="Rename resource &apos;update-form.html&apos;" flags="7" id="org.eclipse.ltk.core.refactoring.rename.resource" input="src/main/resources/templates/user/update-form.html" name="update-contact.html" stamp="1704879282525" updateReferences="true"/>
+</session>

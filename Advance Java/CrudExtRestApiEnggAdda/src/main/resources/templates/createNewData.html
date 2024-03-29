@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<title>Create New Data</title>
+
+	<!-- Bootstrap CSS -->
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+		integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+
+<body>
+
+	<div class="container mt-4">
+		<h2 class="text-center">Create New Data</h2>
+
+		<form th:action="@{/client/new}" th:object="${newTodo}" method="post" onsubmit="return validateForm()">
+			<div class="form-group">
+				<label for="userId">User ID:</label>
+				<input type="number" class="form-control" id="userId" th:field="*{userId}" />
+			</div>
+			<div class="form-group">
+				<label for="id">ID:</label>
+				<input type="number" class="form-control" id="id" th:field="*{id}" required />
+			</div>
+			<div class="form-group">
+				<label for="title">Title:</label>
+				<input type="text" class="form-control" id="title" th:field="*{title}" required/>
+			</div>
+			<div class="form-check">
+				<input type="checkbox" class="form-check-input" id="completed" th:field="*{completed}" />
+				<label class="form-check-label" for="completed">Completed</label>
+			</div>
+			<button type="submit" class="btn btn-primary mt-3">Create</button>
+			<a th:href="@{/client}" class="btn btn-danger mt-3">Back</a>
+		</form>
+
+		<div class="invalid-feedback" style="color: red;" id="userIdError"></div>
+		<div class="invalid-feedback" style="color: red;" id="idError"></div>
+		<div class="invalid-feedback" style="color: red;" id="titleError"></div>
+
+	</div>
+
+	<!-- Bootstrap JS (optional, but needed for some features like dropdowns, modals, etc.) -->
+	<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+		integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+		crossorigin="anonymous"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+		integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+		crossorigin="anonymous"></script>
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+		integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+		crossorigin="anonymous"></script>
+
+	<script>
+		function validateForm() {
+			// Simple validation example (you can enhance this based on your requirements)
+			var userId = document.getElementById('userId').value;
+			var id = document.getElementById('id').value;
+			var title = document.getElementById('title').value;
+			var completed = document.getElementById('completed').checked;
+
+			var userIdError = document.getElementById('userIdError');
+			var idError = document.getElementById('idError');
+			var titleError = document.getElementById('titleError');
+
+			// Reset error messages
+			userIdError.innerText = "";
+			idError.innerText = "";
+			titleError.innerText = "";
+
+			var isValid = true;
+
+			if (!userId) {
+				userIdError.innerText = 'User ID is required.';
+				isValid = false;
+			}
+
+			if (!id) {
+				idError.innerText = 'ID is required.';
+				isValid = false;
+			}
+
+			if (!title) {
+				titleError.innerText = 'Title is required.';
+				isValid = false;
+			}
+
+			if (!completed) {
+				alert('Please fill in all required fields.');
+				return false;
+			}
+
+			return isValid;
+		}
+	</script>
+
+</body>
+
+</html>

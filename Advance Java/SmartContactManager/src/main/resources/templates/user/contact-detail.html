@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="user/base::layout(~{::section})">
+
+<head>
+	<meta charset="ISO-8859-1">
+	<title>Contact Detail</title>
+</head>
+
+<body>
+
+	<section>
+		<div class="card mr-3 ml-3 " th:if=${contact}>
+			<div class="card-body">
+				<div class="container text-center">
+					<img style="height: 200px; width: 200px;" class="contact-profile-picture"
+						th:src="@{'/img/'+${contact.image}}" alt="profile-photo" />
+
+
+					<table class="table table-sm table-white">
+						<thead>
+							<tr class="table-danger">
+								<th scope="col">Id</th>
+								<th scope="row" th:text="${contact.cid}"></th>
+							</tr>
+
+
+						</thead>
+						<tbody>
+							<tr class="table-primary">
+								<th scope="col">Name</th>
+								<th scope="row" th:text="${contact.name}"></th>
+							</tr>
+
+							<tr class="table-warning">
+								<th scope="col">Email</th>
+								<th scope="row" th:text="${contact.email}"></th>
+							</tr>
+
+							<tr class="table-success">
+								<th scope="col">Phone</th>
+								<th scope="row" th:text="${contact.phone}"></th>
+							</tr>
+
+							<tr class="table-info">
+								<th scope="col">Work</th>
+								<th scope="row" th:text="${contact.work}"></th>
+							</tr>
+
+
+
+						</tbody>
+					</table>
+
+					<button type="button" class="btn btn-primary"
+						th:onclick="|deleteContact(${contact.cid})|">Delete</button>
+					<button type="button" class="btn btn-secondary">Update</button>
+				</div>
+
+			</div>
+			<h1 th:unless="${contact}">You have not permission to see this contact</h1>
+
+		</div>
+
+
+	</section>
+
+
+
+</body>
+
+</html>

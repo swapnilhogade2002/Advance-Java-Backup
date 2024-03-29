@@ -1,0 +1,9 @@
+-from entity display data on view	
+
+@GetMapping("/notification")
+	public String getNotifications(Model model) {
+		List<Notification> jobNotification = notificationService.getAllJobNotification();
+		System.out.println(jobNotification);
+		model.addAttribute("jobNotification", jobNotification);
+		return "user/job-notification";
+	}

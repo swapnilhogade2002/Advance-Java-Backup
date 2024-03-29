@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+	<!-- bean configuration using xml -->
+	<bean class="com.sprincore.lifecycleOfBean.Samosa" name="s1"
+		init-method="init" destroy-method="destroy">
+		<property name="price" value="10"></property>
+	</bean>
+
+	<!-- bean configuration using spring interface -->
+	<bean class="com.sprincore.lifecycleOfBean.Pepsi" name="p1">
+		<property name="price" value="5"></property>
+	</bean>
+
+	<bean class="com.sprincore.lifecycleOfBean.Icecream" name="I1">
+		<property name="name" value="choclate"></property>
+	</bean>
+</beans>

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans.xsd
+                           http://www.springframework.org/schema/context
+                           http://www.springframework.org/schema/context/spring-context.xsd">
+
+	<!-- Enable annotation-based configuration -->
+	<context:annotation-config />
+
+	<!-- Define a bean for the Address class -->
+	<bean class="com.springcore.autowiringUsingAnnotation.Address"
+		name="kuchBhiNaamRakhSakteHai..YeSirfTypeCheckKarataHai">
+		<property name="street" value="peth road"></property>
+		<property name="city" value="Nashik"></property>
+	</bean>
+
+	<bean class="com.springcore.autowiringUsingAnnotation.Address"
+		name="address">
+		<property name="street" value="Dubai"></property>
+		<property name="city" value="Mumbai"></property>
+	</bean>
+
+	<!-- Define a bean for the Emp class -->
+	<bean class="com.springcore.autowiringUsingAnnotation.Emp" name="emp1"></bean>
+
+</beans>

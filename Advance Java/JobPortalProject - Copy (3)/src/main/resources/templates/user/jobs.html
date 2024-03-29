@@ -1,0 +1,39 @@
+<!-- src/main/resources/templates/job-list.html -->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<!-- Add necessary meta tags, styles, and scripts -->
+</head>
+
+<body>
+	<h1>Job Postings</h1>
+	<table>
+		<thead>
+			<tr>
+				<th>ID</th>
+				<th>Profile</th>
+				<th>Location</th>
+				<th>Work Mode</th>
+				<th>Job Type</th>
+				<th>Experience</th>
+				<th>CTC</th>
+				<th>Detail</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr th:each="jobPosting : ${jobPostings}">
+				<td th:text="${jobPosting.id}"></td>
+				<td th:text="${jobPosting.profile}"></td>
+				<td th:text="${jobPosting.location}"></td>
+				<td th:text="${jobPosting.workMode}"></td>
+				<td th:text="${jobPosting.jobType}"></td>
+				<td th:text="${jobPosting.experience}"></td>
+				<td th:text="${jobPosting.ctc}"></td>
+				<td th:text="${jobPosting.detail}"></td>
+			</tr>
+		</tbody>
+	</table>
+</body>
+
+</html>

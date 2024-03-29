@@ -1,0 +1,6 @@
+pip install fastapi
+pip install uvicorn
+
+-cd D:\swapnil.hogade\Python\FastApi\myenv
+-.\Scripts\activate
+-uvicorn main:app --reload

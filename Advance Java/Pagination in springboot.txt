@@ -1,0 +1,115 @@
+
+		<!--table start-->
+
+		<div class="container table-container text-center">
+			<table class="table table-striped table-hover">
+				<thead class="thead">
+					<tr>
+						<th>Id</th>
+						<th>Jobseeker Id</th>
+						<th>Message Sent To Jobseeker</th>
+						<th>Status</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr th:each="notification : ${jobNotification}">
+						<td th:text="${notification.id}">Id</td>
+						<td th:text="${notification.recipient.id}">Id</td>
+						<td th:text="${notification.message}">Notification Message</td>
+						<td th:class="${notification.accepted} ? 'accepted' : 'not-accepted'">
+							<span th:if="${notification.accepted}">Accepted</span>
+							<span th:unless="${notification.accepted}">Not Accepted</span>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+
+
+			<!--pagination navigation-->
+			<nav aria-label="Page navigation example">
+				<ul class="pagination">
+					<li th:if="${currentPage != 0}" class="page-item">
+						<a class="page-link" th:href="@{'/company/notification/' + ${currentPage-1}}"
+							aria-label="Previous">
+							<span aria-hidden="true">&laquo;</span>
+							<span class="sr-only">Previous</span>
+						</a>
+					</li>
+					<li th:class="${currentPage == i-1}? 'page-item active' : 'page-item'"
+						th:each="i : ${#numbers.sequence(1, totalPages)}">
+						<a class="page-link" th:href="@{'/company/notification/' + ${i-1}}"><span
+								th:text="${i}"></span></a>
+					</li>
+					<li th:if="${currentPage + 1 < totalPages}" class="page-item">
+						<a class="page-link" th:href="@{'/company/notification/' + ${currentPage+1}}" aria-label="Next">
+							<span aria-hidden="true">&raquo;</span>
+							<span class="sr-only">Next</span>
+						</a>
+					</li>
+				</ul>
+			</nav>
+
+
+		</div>
+		<a th:href="@{'/company/dashboard'}" class="btn btn-danger rounded-pill mb-4">Back to home</a>
+
+
+
+// controller
+	@GetMapping("/notification/{page}")
+	public String getNotifications(@PathVariable("page") Integer page, Model model, Principal principal) {
+	    if (principal == null) {
+	        return "redirect:/login";
+	    }
+
+	    String username = principal.getName();
+
+	    User user = userService.findByEmail(username);
+	    Long userId = user.getId();
+
+	    Pageable pageable = PageRequest.of(page, 3);
+
+	    Page<Notification> userNotifications = notificationService.getAllJobNotificationForCompany(userId, pageable);
+
+	    System.out.println(userNotifications);
+	    System.out.println("Notifications for user with ID " + userId + ":");
+	    for (Notification notification : userNotifications) {
+	        System.out.println(notification.getMessage());
+	    }
+
+	    model.addAttribute("jobNotification", userNotifications);
+	    model.addAttribute("currentPage", page); // Corrected to use 'page' instead of undefined 'currentPage'
+	    model.addAttribute("totalPages", userNotifications.getTotalPages());
+
+	    return "company/candidate-status";
+	}
+
+
+
+
+
+
+
+
+
+
+
+// service
+
+	public Page<Notification> getAllJobNotificationForCompany(Long userId, Pageable pageable) {
+	    return notificationRepository.findByCompanyId(userId, pageable); // Passing pageable to repository method
+	}
+
+
+
+
+
+
+
+
+
+
+
+// repo
+
+ Page<Notification> findByCompanyId(Long companyId, Pageable pageable );

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" type="text/css" href="register.css">
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <style>
+        .error {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+    <div class="container register">
+        <div class="row">
+            <div class="col-md-3 register-left" style="margin-top: 200px;">
+                <h4><b>Registration form !!!</b></h4>
+                <h5>Welcome</h5>
+                <p>Welcome to Aress Software & Education Technologies</p>
+            </div>
+            <div class="col-md-9 register-right">
+                <div class="tab-content" id="myTabContent">
+                    <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+                        <form action="Register" method="post" onsubmit="return validateForm()">
+                            <div class="row register-form">
+                                <div class="col-md-6">
+                                    <!-- first name -->
+                                    <div class="form-group">
+                                        <input type="text" class="form-control" name="fname" id="fname" placeholder="First Name *" pattern="[A-Za-z]+" oninput="removeSpaces(this)" autofocus />
+                                        <span class="error" id="fname-error"></span>
+                                    </div>
+
+                                    <!-- last name -->
+                                    <div class="form-group">
+                                        <input type="text" class="form-control" name="lname" id="lname" placeholder="Last Name *" oninput="removeSpaces(this)" />
+                                        <span class="error" id="lname-error"></span>
+                                    </div>
+
+                                    <!-- password -->
+                                    <div class="form-group">
+                                        <input type="password" class="form-control" name="pass" id="pass" placeholder="Password *" oninput="removeSpaces(this)" />
+                                        <span class="error" id="password-error"></span>
+                                    </div>
+
+                                    <!-- email -->
+                                    <div class="form-group">
+                                        <input type="email" class="form-control" name="email" id="email" placeholder="Your Email *" oninput="removeSpaces(this)" />
+                                        <span class="error" id="email-error"></span>
+                                    </div>
+
+                                    <!-- phone -->
+                                    <div class="form-group">
+                                        <input type="number" class="form-control" name="phone" id="phone" placeholder="Your Phone *" oninput="removeSpaces(this)" />
+                                        <span class="error" id="phone-error"></span>
+                                    </div>
+
+                                    <!-- submit button -->
+                                    <input type="submit" class="btn btn-primary" value="submit" />
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    
+</body>
+</html>

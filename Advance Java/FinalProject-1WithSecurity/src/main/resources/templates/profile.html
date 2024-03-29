@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+	<meta name="description" content="" />
+	<meta name="author" content="" />
+	<title>Employee Management </title>
+	<!-- Favicon-->
+	<link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
+	<!-- Bootstrap icons-->
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet" />
+	<!-- Core theme CSS (includes Bootstrap)-->
+	<link th:href="@{/css/styles.css}" rel="stylesheet" />
+
+</head>
+
+<body onunload="disableBackButton()">
+	<!-- Responsive navbar-->
+	<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+		<div class="container px-5">
+			<a class="navbar-brand" href="#!">
+				<b>Employee Management</b>
+				<a th:href="@{/employee/form}" class="btn btn-info mt-2 mx-3">Add Information</a>
+				<a th:href="@{/employee/attendence}" class="btn btn-warning mt-2 mx-3">Attendance</a>
+				<a th:href="@{/employee/attendenceStatus}" class="btn btn-primary mt-2 mx-3">Status of Attendance</a>
+			</a>
+			<button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+				data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+				aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
+			<div class="collapse navbar-collapse" id="navbarSupportedContent">
+				<ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+					<a class="btn btn-danger" href="/logout" id="logoutButton">Logout</a>
+				</ul>
+			</div>
+		</div>
+	</nav>
+	<!-- Header-->
+	<header class="bg-dark py-5">
+		<div class="container px-5">
+			<div class="row gx-5 justify-content-center">
+				<div class="col-lg-6">
+					<div class="text-center my-5">
+						<h5 class=" fw-bolder text-white mb-2">"Employees Are The Root Of Company"</h5>
+					</div>
+				</div>
+			</div>
+		</div>
+	</header>
+	<!-- Features section-->
+	<section class="py-5 border-bottom" id="features">
+		<div class="container px-5 my-5">
+			<div class="row gx-5">
+				<div class="col-lg-4 mb-5 mb-lg-0">
+
+					<div class="feature bg-primary bg-gradient text-white rounded-3 mb-3"><i
+							class="bi bi-collection"></i></div>
+					<h2 class="h4 fw-bolder">Featured title</h2>
+					<p>Paragraph of text beneath the heading to explain the heading. We'll add onto it with another
+						sentence and probably just keep going until we run out of words.</p>
+					<a class="text-decoration-none" href="#!">
+						Call to action
+						<i class="bi bi-arrow-right"></i>
+					</a>
+				</div>
+				<div class="col-lg-4 mb-5 mb-lg-0">
+					<div class="feature bg-primary bg-gradient text-white rounded-3 mb-3"><i class="bi bi-building"></i>
+					</div>
+					<h2 class="h4 fw-bolder">Featured title</h2>
+					<p>Paragraph of text beneath the heading to explain the heading. We'll add onto it with another
+						sentence and probably just keep going until we run out of words.</p>
+					<a class="text-decoration-none" href="#!">
+						Call to action
+						<i class="bi bi-arrow-right"></i>
+					</a>
+				</div>
+				<div class="col-lg-4">
+					<div class="feature bg-primary bg-gradient text-white rounded-3 mb-3"><i class="bi bi-toggles2"></i>
+					</div>
+					<h2 class="h4 fw-bolder">Featured title</h2>
+					<p>Paragraph of text beneath the heading to explain the heading. We'll add onto it with another
+						sentence and probably just keep going until we run out of words.</p>
+					<a class="text-decoration-none" href="#!">
+						Call to action
+						<i class="bi bi-arrow-right"></i>
+					</a>
+				</div>
+			</div>
+		</div>
+	</section>
+	<!-- Pricing section-->
+
+
+	<!-- Testimonials section-->
+	<section class="py-5 border-bottom">
+		<div class="container px-5 my-5 px-5">
+			<div class="text-center mb-5">
+				<h2 class="fw-bolder">Employee testimonials</h2>
+				<p class="lead mb-0">Our employee love working with us</p>
+			</div>
+			<div class="row gx-5 justify-content-center">
+				<div class="col-lg-6">
+					<!-- Testimonial 1-->
+					<div class="card mb-4">
+						<div class="card-body p-4">
+							<div class="d-flex">
+								<div class="flex-shrink-0"><i class="bi bi-chat-right-quote-fill text-primary fs-1"></i>
+								</div>
+								<div class="ms-4">
+									<p class="mb-1">Thank you for putting together such a great product. We loved
+										working with you and the whole team, and we will be recommending you to others!
+									</p>
+									<div class="small text-muted">- swapnil hogade, UK</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<!-- Testimonial 2-->
+					<div class="card">
+						<div class="card-body p-4">
+							<div class="d-flex">
+								<div class="flex-shrink-0"><i class="bi bi-chat-right-quote-fill text-primary fs-1"></i>
+								</div>
+								<div class="ms-4">
+									<p class="mb-1">The whole team was a huge help with putting things together for our
+										company and brand. We will be hiring them again in the near future for
+										additional work!</p>
+									<div class="small text-muted">- John Doe, Germany</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<!-- Footer-->
+	<footer class="py-5 bg-dark">
+		<div class="container px-5">
+			<p class="m-0 text-center text-white">&copy; Aress 2023</p>
+		</div>
+	</footer>
+
+	<!-- Disable back button after logout -->
+	<script>
+		if (sessionStorage.getItem('logout')) {
+			sessionStorage.removeItem('logout');
+			history.replaceState(null, null, location.href);
+		}
+
+		window.onload = function () {
+			// Check if logout has happened and disable back button
+			if (sessionStorage.getItem('logout')) {
+				// Clear the session storage to avoid the onpopstate event being triggered on page reload
+				sessionStorage.removeItem('logout');
+
+				// Disable the back button
+				history.pushState(null, null, location.href);
+				window.onpopstate = function () {
+					history.go(1);
+				};
+			}
+
+			// Clear form fields
+			var formFields = document.querySelectorAll('input[type="text"], input[type="password"]');
+			formFields.forEach(function (field) {
+				field.value = '';
+			});
+		};
+	</script>
+
+
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+	<script src="js/scripts.js"></script>
+	<script src="https://cdn.startbootstrap.com/sb-forms-latest.js"></script>
+</body>
+
+</html>
+
+
+
+
+
+
+
+
+
+<!--
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="UTF-8">
+	<title>Employee</title>
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+		integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8sh+Wyj4FFdN1mG/oRqi1tuwyl1i5c5GmkJfN" crossorigin="anonymous">
+
+	<style>
+		/* Add custom styles for the sidebar */
+		body {
+			padding-top: 56px;
+		}
+
+		.sidebar {
+			position: fixed;
+			top: 0;
+			bottom: 0;
+			left: 0;
+			z-index: 1000;
+			padding: 20px;
+			box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+		}
+
+		.sidebar a {
+			margin-bottom: 10px;
+		}
+
+
+		#currentTime {
+			font-size: 18px;
+			margin-top: 10px;
+		}
+	</style>
+
+</head>
+
+<body>
+	<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+			aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+			<span class="navbar-toggler-icon"></span>
+		</button>
+		<div class="collapse navbar-collapse" id="navbarNav">
+			<ul class="navbar-nav">
+				<li class="nav-item active">
+					<a th:href="@{/employee/form}" class="btn btn-info mt-2 mx-3">Add Information</a>
+				</li>
+				<li class="nav-item">
+					<a th:href="@{/employee/attendence}" class="btn btn-warning mt-2 mx-3">Attendance</a>
+				</li>
+			</ul>
+		</div>
+	</nav>
+	main header
+	<main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-md-4" th:replace="base::layout(~{::section})"
+		style="margin-top: 62px;">
+		<section class="container mt-5 text-center">
+			<div class="jumbotron">
+				<h3 class="display-4"></h3>
+			</div>
+		</section>
+
+
+		<h5>Employee Management System</h5>
+	</main>
+
+	footer
+	<footer class="bg-dark text-white text-center text-lg-start">
+		 Copyright 
+		<div class="text-center p-3">
+			© 2023 Copyright:
+			<a class="text-white" href="https://aress.com/">Aress</a>
+		</div>
+		 Copyright 
+	</footer>
+	footer
+
+	<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+		integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUcFk5IeZlJbw"
+		crossorigin="anonymous"></script>
+	<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"
+		integrity="sha384-eMN6PvW53FVp7ErdvTkvxXukW+T2z2b4QsxCbN5WN2Gvc8d5FwXgIijsNzwLsqQ"
+		crossorigin="anonymous"></script>
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"
+		integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8sh+Wyj4FFdN1mG/oRqi1tuwyl1i5c5GmkJfN"
+		crossorigin="anonymous"></script>
+
+	<script>
+		function logout() {
+			// Add your logout logic here
+			alert("Logout clicked!");
+		}
+	</script>
+		Add Bootstrap JS and Popper.js
+	<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+		integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+		crossorigin="anonymous"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+		integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+		crossorigin="anonymous"></script>
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+		integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+		crossorigin="anonymous"></script>
+
+	 Add custom JavaScript to update the time 
+	<script>
+		function updateCurrentTime() {
+			var currentTimeElement = document.getElementById('currentTime');
+			var now = new Date();
+			var hours = now.getHours();
+			var ampm = hours >= 12 ? 'PM' : 'AM';
+			hours = hours % 12 || 12; // Convert to 12-hour format
+			var formattedTime = hours + ':' + (now.getMinutes() < 10 ? '0' : '') + now.getMinutes() + ':' + (now.getSeconds() < 10 ? '0' : '') + now.getSeconds() + ' ' + ampm;
+			currentTimeElement.innerHTML = '<strong>Current Time:</strong> ' + formattedTime;
+		}
+
+		// Update the time every second
+		setInterval(updateCurrentTime, 1000);
+
+		// Initial update
+		updateCurrentTime();
+	</script>
+
+</body>
+
+</html>
+
+
+
+-->

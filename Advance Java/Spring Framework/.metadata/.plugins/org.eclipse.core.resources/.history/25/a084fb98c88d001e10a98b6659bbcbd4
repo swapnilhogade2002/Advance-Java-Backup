@@ -1,0 +1,9 @@
+package com.springorm.entities;
+
+public class Student {
+	
+	stud;
+	studentName;
+	studentCity;
+
+}

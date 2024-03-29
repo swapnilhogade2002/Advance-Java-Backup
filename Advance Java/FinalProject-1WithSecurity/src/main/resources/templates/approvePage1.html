@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Thank You!</title>
+	<!-- Bootstrap CSS -->
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+	<!-- Custom CSS for animation -->
+	<style>
+		body {
+			background-color: #f8f9fa;
+		}
+
+		.thank-you-container {
+			text-align: center;
+			margin-top: 100px;
+		}
+
+		.thank-you-text {
+			font-size: 24px;
+			color: #28a745;
+			margin-bottom: 20px;
+		}
+
+		.animated-button {
+			display: inline-block;
+			padding: 10px 20px;
+			font-size: 18px;
+			color: #fff;
+			text-decoration: none;
+			background-color: #007bff;
+			border-radius: 5px;
+			overflow: hidden;
+			position: relative;
+			z-index: 1;
+		}
+
+		.animated-button:before {
+			content: '';
+			display: block;
+			position: absolute;
+			background: #28a745;
+			border-radius: 100%;
+			width: 30px;
+			height: 30px;
+			top: 50%;
+			left: 50%;
+			transform: translate(-50%, -50%);
+			opacity: 0;
+			transition: all 0.3s ease-out;
+		}
+
+		.animated-button:hover:before {
+			opacity: 1;
+			transform: scale(15);
+		}
+
+		.centered-content {
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			justify-content: center;
+			height: 100vh;
+			/* Vertical centering */
+		}
+
+		/* Optional: Add image styling */
+		.centered-content img {
+			max-width: 100%;
+			border-radius: 10px;
+			box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+			margin-bottom: 20px;
+		}
+
+		/* Optional: Add animation */
+		@keyframes fadeIn {
+			from {
+				opacity: 0;
+			}
+
+			to {
+				opacity: 1;
+			}
+		}
+
+		.centered-content img,
+		.thank-you-text,
+		.animated-button {
+			animation: fadeIn 1s ease-out;
+		}
+	</style>
+</head>
+
+<body>
+
+	<div class="centered-content">
+		
+		<img src="data:image/png;base64,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"
+			alt="approveImage">
+		<!-- Replace with your image URL -->
+		<div class="thank-you-text"><b>Approved !</b></div>
+
+		<a th:href="@{/employee/profile}" class="btn btn-primary mt-2 mx-3">Back to home</a>
+
+	</div>
+
+	<!-- Bootstrap JS and Popper.js -->
+	<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.0.9/dist/umd/popper.min.js"></script>
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+</body>
+
+</html>

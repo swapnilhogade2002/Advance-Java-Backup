@@ -1,0 +1,87 @@
+<!-- home.html -->
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="base::layout(~{::section})">
+
+<head>
+	<meta charset="ISO-8859-1">
+	<title>SignUp Page</title>
+</head>
+
+<body>
+	<section>
+		<div class="container">
+			<div class="row">
+				<div class="col-md-8 offset-md-2">
+					<div class="myCard">
+						<h3 class="text-center">Register Here!!</h3>
+
+						<!--	<div th:if="${session.message}" th:classappen="${session.message.type}"
+							class="alert alert-danger" role="alert">
+							<p th:text="${session.message.content}"></p>
+							<th:block th:text="${#session.removeAttribute('message')}"></th:block>
+						</div>-->
+
+
+						<form action="" th:action="@{/do_register}" method="post">
+							<!--<div th:if="${session.message}" th:classappend="${session.message.type}" class="alert alert-danger" role="alert">
+								something went wrong , agree terms and codition
+							</div>-->
+							<!--name -->
+							<div class="form-group">
+								<label for="exampleInputEmail1">Enter Your Name</label>
+								<input type="text" class="form-control" id="exampleInputEmail1"
+									aria-describedby="emailHelp" placeholder="Enter Your Name." name="name" required>
+								
+							</div>
+
+							<!--email -->
+							<div class="form-group">
+								<label for="exampleInputEmail1">Enter Your Email</label>
+								<input type="text" class="form-control" id="exampleInputEmail1"
+									aria-describedby="emailHelp" placeholder="Enter Your Email." name="email" required>
+							</div>
+
+							<!--password -->
+							<div class="form-group">
+								<label for="exampleInputEmail1">Enter Your Password</label>
+								<input type="password" class="form-control" id="exampleInputEmail1" name="password"
+									aria-describedby="emailHelp" placeholder="Enter Your Password." required>
+							</div>
+
+							<!--about something-->
+							<div class="form-group">
+								<textarea placeholder="Enter something about yourself" rows="10" class="form-control"
+									name="about "></textarea>
+							</div>
+
+
+							<!--T&C-->
+							<div class="form-group">
+								<div class="form-check">
+									<input class="form-check-input" type="checkbox" id="gridCheck" name="agreement">
+									<label class="form-check-label" for="gridCheck">
+										Accept term & condition.
+									</label>
+								</div>
+							</div>
+							<div class="container text-center">
+								<!--submit-->
+								<button type="submit" class="btn btn-outline-primary text-black ">
+									Submit
+								</button>
+
+								<!--reset-->
+								<button type="reset" class="btn btn-outline-secondary text-black ">
+									Reset
+								</button>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+
+</body>
+
+</html>

@@ -1,0 +1,29 @@
+Network
+http://192.168.8.1:8090/
+2dLBE5v34Q@6
+
+LMS
+http://lms.aress.net/course/view.php?id=90
+2dLBE5v34Q@6
+
+
+Network Authentication - 
+http://192.168.210.1:8090/  aressnetworks.net  
+name.surname and common password
+
+External Zimbra - 
+https://mail.aressindia.net        
+2dLBE5v34Q@6
+
+Internal Zimbra- https://mail.aress.net                  
+name_surname@aressnetworks.net and common password
+2dLBE5v34Q@6
+
+Project Management Tool-Login - 
+http://203.193.165.229:90/Login/Login    
+name.surname@aressindia.net  and common password
+
+http://aress.sociodesk.com/     
+name.surname@aressindia.net
+
+

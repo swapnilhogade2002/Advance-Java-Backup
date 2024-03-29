@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="UTF-8">
+	<title>Job Applications</title>
+	<!-- Bootstrap CSS -->
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+		integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+
+	<style>
+		.header-content {
+			color: #00B074;
+			font-weight: 600;
+			text-decoration: underline;
+		}
+
+		.btn-info {
+			background-color: #00B074;
+			color: white;
+		}
+
+		/* Style for accept and reject buttons */
+		.btn-accept {
+			background-color: #28a745;
+			border-color: #28a745;
+		}
+
+		.btn-reject {
+			background-color: #dc3545;
+			border-color: #dc3545;
+		}
+
+		/* Style for table rows on hover */
+		tbody tr:hover {
+			background-color: #f2f2f2;
+			cursor: pointer;
+		}
+	</style>
+</head>
+
+<body>
+	<div class="container mt-5">
+		<h2 class="header-content">Job Applications</h2>
+		<table class="table">
+			<thead>
+				<tr>
+					<th>User ID</th>
+					<th>User Email</th>
+					<th>User Mobile No</th>
+					<th>User Resume</th>
+					<th>Job ID</th>
+					<th>Job Title</th>
+					<th>Actions</th>
+				</tr>
+			</thead>
+			<tbody>
+				<!-- Iterate over jobApplications list -->
+				<tr th:each="jobApplication : ${jobApplications}" class="table-light">
+					<!-- Display user information -->
+					<td th:text="${jobApplication.user.id}"></td>
+					<td th:text="${jobApplication.user.email}"></td>
+					<td th:text="${jobApplication.user.mobile}"></td>
+					<!-- Display download link for user's resume -->
+					<td>
+						<a th:href="'/downloadFile?userId=' + ${jobApplication.user.id}"
+							class="btn btn-primary btn-sm">Download Resume</a>
+					</td>
+					<!-- Display job information -->
+					<td th:text="${jobApplication.jobPosting.id}"></td>
+					<td th:text="${jobApplication.jobPosting.profile}"></td>
+					<!-- Display accept and reject buttons -->
+					<td>
+						<div class="row">
+							<div class="col">
+								<form method="post" action="@{/company/accept-job}">
+									<button type="submit" class="btn btn-info btn-sm btn-accept">Accept</button>
+								</form>
+							</div>
+							<div class="col">
+								<button type="button" class="btn btn-danger btn-sm btn-reject">Reject</button>
+							</div>
+						</div>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+		<a th:href="@{'/company/dashboard'}" class="btn btn-info">Back to home</a>
+	</div>
+
+	<!-- Bootstrap JS (optional, only if needed) -->
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"
+		integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shCk5WVa7Z9HqUyo5yyCw8g+8AtXVGaX3MKqt"
+		crossorigin="anonymous"></script>
+
+
+</body>
+
+</html>

@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<title>Company Profile</title>
+
+	<!-- Bootstrap CSS -->
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+	<!-- Custom CSS -->
+	<style>
+		body {
+		
+			background-color: #f8f9fa;
+		}
+
+		.profile-card {
+			border: 1px solid #dee2e6;
+			border-radius: 10px;
+			box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+			background-color: #fff;
+			padding: 20px;
+			margin-top: 10px;
+		}
+
+		.profile-title {
+			color: #00B074;
+			text-align: center;
+			margin-bottom: 20px;
+		}
+
+		.profile-details {
+		
+			background-color: #e9ecef;
+			padding: 20px;
+			border-radius: 10px;
+		}
+
+		.profile-details p {
+			margin-bottom: 15px;
+			color: #495057;
+			font-size: 15px;
+			font-family: Verdana, Geneva, Tahoma, sans-serif;
+			text-align: center;
+			font-weight: 800;
+		}
+
+		.job-list {
+			list-style: none;
+			padding: 0;
+		
+			display: flex;
+			flex-wrap: wrap;
+			justify-content: space-between;
+		}
+
+		.job-list-item {
+			width: 48%;
+			margin-bottom: 15px;
+			background-color: #00B074;
+			color: white;
+			padding: 15px;
+			border-radius: 8px;
+			font-size: 16px;
+			box-sizing: border-box;
+		}
+
+		.card-img {
+			height: 90px;
+			width: 90px;
+			max-height: 200px;
+			object-fit: cover;
+			border-radius: 50%;
+			margin: 0 auto;
+			display: block;
+		}
+
+		.btn-info {
+			background-color: #00B074;
+			color: white;
+		}
+	</style>
+</head>
+
+<body>
+
+	<div class="container">
+		<div class="row">
+			<div class="col-lg-8 offset-lg-2">
+				<a th:href="@{'/company/dashboard'}" class="btn btn-info">Back to home</a>
+				<div class="profile-card">
+					<h4 class="profile-title text-decoration-underline">Your Profile</h4>
+					<img src="/img/company-profile-img.jpg" class="card-img" alt="Card Image">
+					<div class="profile-details">
+
+						<div class="row mb-3">
+							<div class="col-md-4 fw-bold">
+								<p>Email:</p>
+							</div>
+							<div class="col-md-8">
+								<p th:text="${currentUser.email}" class="fs-medium"></p>
+							</div>
+						</div>
+						<div class="row mb-3">
+							<div class="col-md-4 fw-bold">
+								<p>City:</p>
+							</div>
+							<div class="col-md-8">
+								<p th:text="${currentUser.city}" class="fs-medium"></p>
+							</div>
+						</div>
+						<div class="row mb-3">
+							<div class="col-md-4 fw-bold">
+								<p>Name:</p>
+							</div>
+							<div class="col-md-8">
+								<p th:text="${currentUser.name}" class="fs-medium"></p>
+							</div>
+						</div>
+					</div>
+
+					<h4 class="mt-4 profile-title text-decoration-underline">Jobs Posted:</h4>
+					<ul class="job-list">
+						<li th:each="job : ${userJobs}" class="job-list-item">
+							<span th:text="${job.profile}"></span>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+
+</html>

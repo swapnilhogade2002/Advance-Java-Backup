@@ -1,0 +1,692 @@
+package com.job.controller;
+
+import java.security.Principal;
+import java.util.ArrayList;
+import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import com.job.entity.JobApplications;
+import com.job.entity.JobPosting;
+import com.job.entity.Notification;
+import com.job.entity.User;
+import com.job.repository.JobApplicationRepository;
+import com.job.repository.JobPostingRepository;
+import com.job.repository.NotificationRepo;
+import com.job.repository.UserRepository;
+import com.job.service.JobApplicationService;
+import com.job.service.JobPostingService;
+import com.job.service.NotificationService;
+import com.job.service.UserService;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.data.domain.Pageable;
+
+import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
+@Controller
+@RequestMapping("/company")
+public class CompanyController {
+
+	@Autowired
+	private JobPostingService jobPostingService;
+
+	@Autowired
+	private JobApplicationRepository jobApplicationRepository;
+
+	@Autowired
+	private UserRepository userRepository;
+
+	@Autowired
+	private UserService userService;
+
+	@Autowired
+	private JobPostingRepository jobPostingRepository;
+
+	@Autowired
+	private NotificationService notificationService;
+
+	@Autowired
+	private NotificationRepo notificationRepo;
+
+	@Autowired
+	private JobApplicationService jobApplicationService;
+
+	@Autowired
+	private BCryptPasswordEncoder passwordEncoder;
+
+//  Company dashboard
+	@GetMapping("/dashboard")
+	public String companyDashboardView(Model model, Principal principal) {
+		if (principal != null) {
+			String currentUserEmail = principal.getName();
+
+			// Get the currently logged-in user by email
+			User currentUser = userService.findByEmail(currentUserEmail);
+
+			if (currentUser != null) {
+				// Get jobs posted by the current user
+				List<JobPosting> userJobs = jobPostingService.getJobsByUser(currentUser.getId());
+
+				// Count the total number of jobs posted by the user
+				long totalJobsPosted = userJobs.size();
+
+				// Count the number of jobs based on work mode
+				long workFromHomeJobs = userJobs.stream()
+						.filter(job -> "work from home".equalsIgnoreCase(job.getWorkMode())).count();
+				long workFromOfficeJobs = userJobs.stream()
+						.filter(job -> "work from office".equalsIgnoreCase(job.getWorkMode())).count();
+
+				// Add userJobs to the model for rendering in Thymeleaf template
+				model.addAttribute("currentUser", currentUser);
+				model.addAttribute("userJobs", userJobs);
+				model.addAttribute("totalJobsPosted", totalJobsPosted);
+				model.addAttribute("workFromHomeJobs", workFromHomeJobs);
+				model.addAttribute("workFromOfficeJobs", workFromOfficeJobs);
+
+				// Print user details to the console
+				System.out.println("User Details:");
+				System.out.println("Email: " + currentUser.getEmail());
+				System.out.println("Total Jobs Posted: " + totalJobsPosted);
+				System.out.println("Work from Home Jobs: " + workFromHomeJobs);
+				System.out.println("Work from Office Jobs: " + workFromOfficeJobs);
+
+				// Return the Thymeleaf template path
+				return "/company/company";
+			}
+		}
+
+		// Handle the case where the principal is null or the user is not found
+		return "redirect:/login"; // You can redirect to the login page or handle it according to your needs
+	}
+
+	// Add-job form
+	@GetMapping("/add-job")
+	public String addJob() {
+		return "company/jobPostForm";
+	}
+
+//	Save job with mapping 
+	@PostMapping("/save")
+	public String saveJobPosting(@ModelAttribute JobPosting jobPosting, Principal principal, Model model) {
+		try {
+			// Get the currently logged-in user
+			User loggedInUser = userService.findByEmail(principal.getName()); // Assuming you have a userService
+
+			// Set the user in the jobPosting
+			jobPosting.setUser(loggedInUser);
+
+			// Save the job posting
+			JobPosting savedJobPosting = jobPostingService.saveJobPosting(jobPosting);
+
+			// Redirect to the dashboard view
+			return "redirect:/company/dashboard";
+		} catch (Exception e) {
+			// Handle the error, you might want to display an error message on the current
+			// page
+			model.addAttribute("errorMessage", "Error saving job posting: " + e.getMessage());
+			return "error-page"; // Replace "error-page" with the actual error page view name
+		}
+	}
+
+//	showing all jobs to company
+//	work on pagination
+	@GetMapping("/view-jobs/{page}")
+	public String viewJobs(@PathVariable("page") Integer page, Model model, Principal principal) {
+		if (principal != null) {
+			String currentUserEmail = principal.getName();
+
+			// Get the currently logged-in user by email
+			User currentUser = userService.findByEmail(currentUserEmail);
+
+			if (currentUser != null) {
+				// Create a pageable object with the current page number and page size
+				Pageable pageable = PageRequest.of(page, 3); // 3 jobs per page
+
+				// Get jobs posted by the current user with pagination
+				Page<JobPosting> userJobs = jobPostingService.getJobsByUserP(currentUser.getId(), pageable);
+
+				// Add userJobs to the model for rendering in Thymeleaf template
+				model.addAttribute("userJobs", userJobs);
+
+				// Add pagination attributes
+				model.addAttribute("currentPage", page);
+				model.addAttribute("totalPages", userJobs.getTotalPages());
+
+				// Return the Thymeleaf template path
+				return "/company/view-jobs";
+			}
+		}
+
+		// Handle the case where the principal is null or the user is not found
+		return "redirect:/login"; // You can redirect to the login page or handle it according to your needs
+	}
+
+//	@GetMapping("/view-jobs")
+//	public String viewJobs(Model model, Principal principal) {
+//		if (principal != null) {
+//			String currentUserEmail = principal.getName();
+//
+//			// Get the currently logged-in user by email
+//			User currentUser = userService.findByEmail(currentUserEmail);
+//
+//			if (currentUser != null) {
+//				// Get jobs posted by the current user
+//				List<JobPosting> userJobs = jobPostingService.getJobsByUser(currentUser.getId());
+//
+//				// Add userJobs to the model for rendering in Thymeleaf template
+//				model.addAttribute("userJobs", userJobs);
+//
+//				// Return the Thymeleaf template path
+//				return "/company/view-jobs";
+//			}
+//		}
+//
+//		// Handle the case where the principal is null or the user is not found
+//		return "redirect:/login"; // You can redirect to the login page or handle it according to your needs
+//	}
+
+//	showing company profile
+	@GetMapping("/profile")
+	public String showProfile(Model model, Principal principal) {
+		if (principal != null) {
+			String currentUserEmail = principal.getName();
+
+			// Get the currently logged-in user by email
+			User currentUser = userService.findByEmail(currentUserEmail);
+
+			if (currentUser != null) {
+				// Get jobs posted by the current user
+				List<JobPosting> userJobs = jobPostingService.getJobsByUser(currentUser.getId());
+
+				// Count the total number of jobs posted by the user
+				long totalJobsPosted = userJobs.size();
+
+				// Count the number of jobs based on work mode
+				long workFromHomeJobs = userJobs.stream()
+						.filter(job -> "work from home".equalsIgnoreCase(job.getWorkMode())).count();
+				long workFromOfficeJobs = userJobs.stream()
+						.filter(job -> "work from office".equalsIgnoreCase(job.getWorkMode())).count();
+
+				// Add userJobs to the model for rendering in Thymeleaf template
+				model.addAttribute("currentUser", currentUser);
+				model.addAttribute("userJobs", userJobs);
+				model.addAttribute("totalJobsPosted", totalJobsPosted);
+				model.addAttribute("workFromHomeJobs", workFromHomeJobs);
+				model.addAttribute("workFromOfficeJobs", workFromOfficeJobs);
+
+				// Return the Thymeleaf template path
+				return "/company/company-profile";
+			}
+		}
+
+		// Handle the case where the principal is null or the user is not found
+		return "redirect:/login"; // You can redirect to the login page or handle it according to your needs
+	}
+
+//	calculate total for dashboard
+	@GetMapping("/count")
+	public String companyDashboard(Model model, Principal principal) {
+		if (principal != null) {
+			String currentUserEmail = principal.getName();
+
+			// Get the currently logged-in user by email
+			User currentUser = userService.findByEmail(currentUserEmail);
+
+			if (currentUser != null) {
+				// Get jobs posted by the current user
+				List<JobPosting> userJobs = jobPostingService.getJobsByUser(currentUser.getId());
+
+				// Count the total number of jobs posted by the user
+				long totalJobsPosted = userJobs.size();
+
+				// Count the number of jobs based on work mode
+				long workFromHomeJobs = userJobs.stream()
+						.filter(job -> "work from home".equalsIgnoreCase(job.getWorkMode())).count();
+				long workFromOfficeJobs = userJobs.stream()
+						.filter(job -> "work from office".equalsIgnoreCase(job.getWorkMode())).count();
+
+				// Add counts to the model for rendering in Thymeleaf template
+				model.addAttribute("currentUser", currentUser);
+				model.addAttribute("totalJobsPosted", totalJobsPosted);
+				model.addAttribute("workFromHomeJobs", workFromHomeJobs);
+				model.addAttribute("workFromOfficeJobs", workFromOfficeJobs);
+
+				// Print counts to the console
+				System.out.println("User Details:");
+				System.out.println("Email: " + currentUser.getEmail());
+				System.out.println("Total Jobs Posted: " + totalJobsPosted);
+				System.out.println("Work from Home Jobs: " + workFromHomeJobs);
+				System.out.println("Work from Office Jobs: " + workFromOfficeJobs);
+
+				// Return the Thymeleaf template path
+				return "company/dashboard";
+			}
+		}
+
+		// Handle the case where the principal is null or the user is not found
+		return "redirect:/login"; // You can redirect to the login page or handle it according to your needs
+	}
+
+//	application of jobs
+//	paginations
+
+	@GetMapping("/job-application/{page}")
+	public String jobApplication(@PathVariable("page") Integer page, Model model, Principal principal) {
+	    // Retrieve the logged-in company
+	    String loggedInUsername = principal.getName();
+	    User loggedInCompany = userRepository.findByEmail(loggedInUsername);
+
+	    // Create a pageable object for pagination
+	    Pageable pageable = PageRequest.of(page, 3); // 3 job applications per page
+
+	    // Retrieve job postings created by the logged-in company
+	    List<JobPosting> companyJobPostings = jobPostingRepository.findByUserId(loggedInCompany.getId());
+
+	    // Create a list to store job applications
+	    List<JobApplications> jobApplicationsList = new ArrayList<>();
+
+	    // Iterate over each job posting
+	    for (JobPosting posting : companyJobPostings) {
+	        // Retrieve job applications for the current job posting and page using the service
+	        Page<JobApplications> jobApplicationsPage = jobApplicationService.findByJobPosting(posting, pageable);
+
+	        // Add job applications of the current page to the list
+	        jobApplicationsList.addAll(jobApplicationsPage.getContent());
+	    }
+
+	    // Add the job applications and pagination information to the model
+	    model.addAttribute("jobApplications", jobApplicationsList);
+	    model.addAttribute("currentPage", page); // Current page number
+
+	    // Calculate the total number of job applications for the logged-in company
+	    int totalJobApplications = jobApplicationService.getTotalJobApplicationsForCompany(loggedInCompany);
+
+	    // Calculate the total number of pages
+	    int totalPages = (int) Math.ceil((double) totalJobApplications / 3); // 3 job applications per page
+	    model.addAttribute("totalPages", totalPages); // Total number of pages
+
+	    return "/company/job-application";
+	}
+
+
+
+
+
+
+//	@GetMapping("/job-application")
+//	public String jobApplication(Model model, Principal principal) {
+//		// Retrieve the logged-in company
+//		String loggedInUsername = principal.getName();
+//		User loggedInCompany = userRepository.findByEmail(loggedInUsername);
+//
+//		// Retrieve job postings created by the logged-in company
+//		List<JobPosting> companyJobPostings = jobPostingRepository.findByUserId(loggedInCompany.getId());
+//
+//		// Retrieve job applications associated with the company's job postings
+//		List<JobApplications> jobApplicationsList = new ArrayList<>();
+//		for (JobPosting posting : companyJobPostings) {
+//			jobApplicationsList.addAll(jobApplicationRepository.findByJobPosting(posting));
+//		}
+//
+//		// Add the job applications to the model
+//		model.addAttribute("jobApplications", jobApplicationsList);
+//
+//		return "/company/job-application";
+//	}
+
+//	download resume 
+	@Autowired
+	public CompanyController(UserService userService) {
+		this.userService = userService;
+	}
+
+	@GetMapping("/downloadFile/{userId}")
+	public ResponseEntity<Resource> downloadFile(@PathVariable Long userId) throws IOException {
+		User user = userService.getUserById(userId);
+
+		// Assuming the file path is stored in the 'file' field of the User entity
+		String filePathString = "D:/swapnil.hogade/Advance Java/JobPortalProject/data/" + user.getFile();
+		Path filePath = Paths.get(filePathString);
+		Resource resource = new UrlResource(filePath.toUri());
+
+		// Set content type as application/octet-stream to force download
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+		headers.setContentDispositionFormData("attachment", resource.getFilename());
+
+		return ResponseEntity.ok().headers(headers).body(resource);
+	}
+
+//	@PostMapping("/accept-job")
+//	public String acceptJob(Model model, Principal principal, @RequestParam Long jobId) {
+//		// Get the job application associated with the provided jobId
+//		JobApplications jobApplication = jobApplicationRepository.findById(jobId)
+//				.orElseThrow(() -> new IllegalArgumentException("Job application not found with ID: " + jobId));
+//
+//		// Check if the user has already been selected for any job application
+//		if (notificationRepo.existsByRecipientIdAndMessage(jobApplication.getUser().getId(),
+//				"You are selected for the job!")) {
+//			// Redirect to some page indicating that the user has already been selected
+//			return "redirect:/company/job-application";
+//		}
+//
+//		// Create a new notification or update an existing one
+//		Notification notification = new Notification();
+//		notification.setMessage("You are selected for the job!");
+//		notification.setRecipient(jobApplication.getUser());
+//		notification.setStatus(false); // Assuming initial status is unread
+//		notificationRepo.save(notification);
+//
+//		// Update the job application to indicate that it has been accepted
+//		jobApplication.setAccepted(true);
+//		jobApplicationRepository.save(jobApplication);
+//
+//		// Redirect to the appropriate page
+//		return "redirect:/company/job-application";
+//	}
+
+//	mapping working 
+
+//	@PostMapping("/accept-job")
+//	public String acceptJob(Model model, Principal principal, @RequestParam Long jobId) {
+//	    // Get the job application associated with the provided jobId
+//	    JobApplications jobApplication = jobApplicationRepository.findById(jobId)
+//	            .orElseThrow(() -> new IllegalArgumentException("Job application not found with ID: " + jobId));
+//
+//	    // Check if the user has already been selected for any job application from the same company
+//	    if (notificationRepo.existsByRecipientAndCompanyAndMessage(
+//	            jobApplication.getUser(), jobApplication.getJobPosting().getUser(), "You are selected for the job!")) {
+//	        // Redirect to some page indicating that the user has already been selected
+//	        return "redirect:/company/job-application";
+//	    }
+//
+//	    // Create a new notification or update an existing one
+//	    Notification notification = new Notification();
+//	    notification.setMessage("You are selected for the job!");
+//	    notification.setRecipient(jobApplication.getUser());
+//	    notification.setCompany(jobApplication.getJobPosting().getUser());
+//	    notification.setStatus(false); // Assuming initial status is unread
+//	    notificationRepo.save(notification);
+//
+//	    // Update the job application to indicate that it has been accepted
+//	    jobApplication.setAccepted(true);
+//	    jobApplicationRepository.save(jobApplication);
+//
+//	    // Redirect to the appropriate page
+//	    return "redirect:/company/job-application";
+//	}
+
+//  Job application 
+	@PostMapping("/accept-job")
+	public String acceptJob(Model model, Principal principal, @RequestParam Long jobId) {
+		// Get the job application associated with the provided jobId
+		JobApplications jobApplication = jobApplicationRepository.findById(jobId)
+				.orElseThrow(() -> new IllegalArgumentException("Job application not found with ID: " + jobId));
+
+		// Check if the user has already been selected for any job application from the
+		// same company
+		if (notificationRepo.existsByRecipientAndCompanyAndMessage(jobApplication.getUser(),
+				jobApplication.getJobPosting().getUser(), "You are selected for the job!")) {
+			// Redirect to some page indicating that the user has already been selected
+			return "redirect:/company/job-application";
+		}
+
+		// Get the job posting details
+		JobPosting jobPosting = jobApplication.getJobPosting();
+
+		// Construct the notification message with job details
+		String message = "Congratulations! You are selected for the job " + jobPosting.getProfile()
+				+ ". job location is Location " + jobPosting.getLocation() + " . your package is  "
+				+ jobPosting.getCtc() + " lakh per annum.";
+
+		// Check if a notification already exists for this job application
+		if (!notificationRepo.existsByRecipientAndJobPostingAndMessage(jobApplication.getUser(), jobPosting, message)) {
+			// Create a new notification
+			Notification notification = new Notification();
+			notification.setMessage(message);
+			notification.setRecipient(jobApplication.getUser());
+			notification.setCompany(jobPosting.getUser());
+			notification.setStatus(false); // Assuming initial status is unread
+			notification.setJobPosting(jobPosting);
+			notificationRepo.save(notification);
+		}
+
+		// Update the job application to indicate that it has been accepted
+		jobApplication.setAccepted(true);
+		jobApplicationRepository.save(jobApplication);
+
+		// Redirect to the appropriate page
+		return "redirect:/company/job-application/0";
+	}
+
+//	job application-delete
+	@PostMapping("/delete-job-application")
+	public String deleteJobApplication(@RequestParam("jobId") Long jobId, Long id) {
+		jobApplicationService.updateJobApplicationStatus(jobId, false);
+//		jobPostingService.deleteJob(id);
+		return "redirect:/company/job-application";
+	}
+
+//	showing job application status of employee
+//	@GetMapping("/notification")
+//	public String getNotifications(Model model, Principal principal) {
+//	    if (principal == null) {
+//	        // User is not authenticated, handle the situation accordingly
+//	        // For example, redirect to a login page or display an error message
+//	        return "redirect:/login"; // Redirect to the login page
+//	    }
+//
+//	    String username = principal.getName();
+//
+//	    // Retrieve the authenticated user from the database based on the username
+//	    User user = userService.findByEmail(username); // Assuming userService has a method to find a user by email
+//
+//	    Long recipientId = user.getId();
+//
+//	    // Retrieve notifications for the logged-in user
+//	    List<Notification> userNotifications = notificationService.getAllJobNotificationForCompany(recipientId);
+//
+//	    // Print the notifications for debugging purposes
+//	    System.out.println("Notifications for user with ID " + recipientId + ":");
+//	    for (Notification notification : userNotifications) {
+//	        System.out.println(notification.getMessage());
+//	    }
+//
+//	    // Add notifications to the model
+//	    model.addAttribute("jobNotification", userNotifications);
+//
+//	    return "company/candidate-status";
+//	}
+//	
+
+	@GetMapping("/notification/{page}")
+	public String getNotifications(@PathVariable("page") Integer page, Model model, Principal principal) {
+		if (principal == null) {
+			return "redirect:/login";
+		}
+
+		String username = principal.getName();
+
+		User user = userService.findByEmail(username);
+		Long userId = user.getId();
+
+		Pageable pageable = PageRequest.of(page, 3);
+
+		Page<Notification> userNotifications = notificationService.getAllJobNotificationForCompany(userId, pageable);
+
+		System.out.println(userNotifications);
+		System.out.println("Notifications for user with ID " + userId + ":");
+		for (Notification notification : userNotifications) {
+			System.out.println(notification.getMessage());
+		}
+
+		model.addAttribute("jobNotification", userNotifications);
+		model.addAttribute("currentPage", page); // Corrected to use 'page' instead of undefined 'currentPage'
+		model.addAttribute("totalPages", userNotifications.getTotalPages());
+
+		return "company/candidate-status";
+	}
+
+//	@GetMapping("/notification")
+//	public String getNotifications(Model model, Principal principal) {
+//		if (principal == null) {
+//			return "redirect:/login";
+//		}
+//
+//		String username = principal.getName();
+//
+//		User user = userService.findByEmail(username); 
+//		Long userId = user.getId();
+//
+//		List<Notification> userNotifications = notificationService.getAllJobNotificationForCompany(userId);
+//		
+//		System.out.println(userNotifications);
+//		System.out.println("Notifications for user with ID " + userId + ":");
+//		for (Notification notification : userNotifications) {
+//			System.out.println(notification.getMessage());
+//		}
+//
+//		model.addAttribute("jobNotification", userNotifications);
+//
+//		return "company/candidate-status";
+//	}
+
+// CRUD of jobs	
+	// Controller method for displaying the edit job form
+	@GetMapping("/edit-job/{id}")
+	public String editJob(@PathVariable Long id, Model model) {
+		JobPosting job = jobPostingService.getJobById(id);
+		model.addAttribute("job", job);
+
+		return "/company/edit-job/0";
+	}
+
+// Controller method for updating the job details
+
+	@PostMapping("/edit-job/{id}")
+	public String updateJob(@PathVariable Long id, @ModelAttribute JobPosting updatedJob) {
+		// Retrieve the existing job by ID
+		JobPosting existingJob = jobPostingService.getJobById(id);
+
+		// Update the existing job details with the new values
+		existingJob.setProfile(updatedJob.getProfile());
+		existingJob.setLocation(updatedJob.getLocation());
+		existingJob.setWorkMode(updatedJob.getWorkMode());
+		existingJob.setJobType(updatedJob.getJobType());
+		existingJob.setExperience(updatedJob.getExperience());
+		existingJob.setCtc(updatedJob.getCtc());
+		existingJob.setDetail(updatedJob.getDetail());
+		existingJob.setJobCategory(updatedJob.getJobCategory());
+
+		// Save the updated job details
+		jobPostingService.saveJob(existingJob);
+
+		// Redirect to a suitable endpoint (e.g., job details page)
+		return "redirect:/company/view-jobs/0";
+	}
+
+//	@PostMapping("/edit-job/{id}")
+//	public String updateJob(@PathVariable Long id, @ModelAttribute JobPosting updatedJob) {
+//		jobPostingService.updateJob(id, updatedJob);
+//		return "redirect:/company/view-jobs";
+//	}
+
+	// Controller method for handling job deletion
+
+	@PostMapping("/delete-job/{id}")
+	public String deleteJob(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+		try {
+			jobPostingService.deleteJob(id);
+			redirectAttributes.addFlashAttribute("successMessage", "Job deleted successfully!");
+		} catch (DataIntegrityViolationException e) {
+			redirectAttributes.addFlashAttribute("errorMessage",
+					"Cannot delete job. There are related job applications.");
+		}
+		return "redirect:/company/view-jobs";
+	}
+
+//	@PostMapping("/delete-job/{id}")
+//	public String deleteJob(@PathVariable Long id) {
+//		jobPostingService.deleteJob(id);
+//		return "redirect:/company/view-jobs";
+//	}
+//	
+
+//	forgot password 
+	@GetMapping("/forgot-password")
+	public String forgotPasswordForm() {
+		return "company/forgot-password";
+	}
+
+//	@PostMapping("/forgot-password")
+//	public ModelAndView forgotPassword(@RequestParam("email") String email,
+//	                                   @RequestParam("currentPassword") String currentPassword,
+//	                                   @RequestParam("newPassword") String newPassword) {
+//	    User user = userRepository.findByEmail(email);
+//	    ModelAndView modelAndView = new ModelAndView();
+//
+//	    if (user == null) {
+//	        modelAndView.setViewName("redirect:/forgot-password?error=userNotFound");
+//	        return modelAndView;
+//	    }
+//
+//	    String encryptedPassword = user.getPassword();
+//
+//	    if (!passwordEncoder.matches(currentPassword, encryptedPassword)) {
+//	        modelAndView.setViewName("redirect:/forgot-password?error=invalidPassword");
+//	        return modelAndView;
+//	    }
+//
+//	    user.setPassword(passwordEncoder.encode(newPassword));
+//	    userRepository.save(user);
+//
+//	    modelAndView.setViewName("redirect:/login?resetSuccess");
+//	    return modelAndView;
+//	}
+
+	@PostMapping("/forgot-password")
+	public ModelAndView forgotPassword(@RequestParam("email") String email,
+			@RequestParam("currentPassword") String currentPassword, @RequestParam("newPassword") String newPassword) {
+		User user = userRepository.findByEmail(email);
+		ModelAndView modelAndView = new ModelAndView();
+
+		if (user == null || !passwordEncoder.matches(currentPassword, user.getPassword())) {
+			// Show simple alert
+			String errorMessage = "Invalid email or password.";
+			modelAndView.addObject("errorMessage", errorMessage);
+			modelAndView.setViewName("redirect:/login");
+			return modelAndView;
+		}
+
+		// Update user password and save
+		user.setPassword(passwordEncoder.encode(newPassword));
+		userRepository.save(user);
+
+		modelAndView.setViewName("redirect:/login?resetSuccess");
+		return modelAndView;
+	}
+
+}

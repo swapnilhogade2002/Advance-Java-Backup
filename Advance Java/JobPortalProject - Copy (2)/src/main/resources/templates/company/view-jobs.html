@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Your Posted Jobs</title>
+	<link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+	<style>
+		body {
+			background-color: #f8f9fa;
+			color: #343a40;
+		}
+
+		.container {
+			margin-top: 50px;
+		}
+
+		.header-content {
+			color: #00B074;
+			font-weight: bold;
+			text-decoration: underline;
+		}
+
+		.btn-info,
+		.btn-danger {
+			color: white;
+		}
+		
+		.btn-info{
+			background-color: #00B074;	
+		}
+
+		.btn-info:hover,
+		.btn-danger:hover {
+			color: white;
+		}
+
+		.job-actions {
+			display: flex;
+			justify-content: center;
+		}
+
+		.job-actions .btn {
+			margin-right: 5px;
+		}
+
+		@media only screen and (max-width: 768px) {
+			.table-responsive-sm {
+				overflow-x: auto;
+			}
+		}
+	</style>
+</head>
+
+<body>
+	<div class="container">
+		<h4 class="header-content">Your Posted Jobs</h4>
+
+		<div class="table-responsive-sm">
+			<table class="table table-striped text-center">
+				<thead>
+					<tr>
+						<th>Job Title</th>
+						<th>Job Location</th>
+						<th>Job Work-Mode</th>
+						<th>Job Type</th>
+						<th>Experience (Years)</th>
+						<th>CTC (Lakh)</th>
+						<th>Job Detail</th>
+						<th>Actions</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr th:each="job, iterStat : ${userJobs}">
+						<td th:text="${job.profile}"></td>
+						<td th:text="${job.location}"></td>
+						<td th:text="${job.workMode}"></td>
+						<td th:text="${job.jobType}"></td>
+						<td th:text="${job.experience}"></td>
+						<td th:text="${job.ctc}"></td>
+						<td th:text="${job.detail}"></td>
+						<td class="job-actions">
+							<a th:href="@{'/company/edit-job/' + ${job.id}}" class="btn btn-info">Edit</a>
+							<form th:action="@{'/company/delete-job/' + ${job.id}}" method="post"
+								onsubmit="return confirm('Are you sure?')">
+								<button type="submit" class="btn btn-danger">Delete</button>
+							</form>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+		<a th:href="@{'/company/dashboard'}" class="btn btn-info mt-3">Back to Home</a>
+	</div>
+</body>
+
+</html>

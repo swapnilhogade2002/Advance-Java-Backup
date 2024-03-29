@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<title>Candidate Status</title>
+	<!-- Bootstrap CSS -->
+	<link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+	<!-- Custom CSS -->
+	<style>
+		
+
+		.table-container table tbody tr td.accepted {
+			color: green;
+		}
+
+		.table-container table tbody tr td.not-accepted {
+			color: red;
+		}
+	</style>
+</head>
+
+<body>
+	<div class="container table-container text-center">
+		<h1 class="text-center">Job Notifications</h1>
+		<table class="table table-striped table-hover">
+			<thead class="thead-dark">
+				<tr>
+					<th>Id</th>
+					<th>Jobseeker Id</th>
+					<th>Message</th>
+					<th>Accepted</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr th:each="notification : ${jobNotification}">
+					<td th:text="${notification.id}">Id</td>
+					<td th:text="${notification.recipient.id}">Id</td>
+					<td th:text="${notification.message}">Notification Message</td>
+					<td th:class="${notification.accepted} ? 'accepted' : 'not-accepted'">
+						<span th:if="${notification.accepted}">Accepted</span>
+						<span th:unless="${notification.accepted}">Not Accepted</span>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+	<!-- Bootstrap JS (optional) -->
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+
+</html>

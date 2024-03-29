@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="UTF-8">
+	<title>Job Applications</title>
+	<!-- Bootstrap CSS -->
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+		integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+
+	<style>
+		.header-content {
+			color: #00B074;
+			font-weight: 600;
+			text-decoration: underline;
+		}
+
+		.btn-info {
+			background-color: #00B074;
+			color: white;
+		}
+
+		/* Style for accept and reject buttons */
+		.btn-accept {
+			background-color: #28a745;
+			border-color: #28a745;
+		}
+
+		.btn-reject {
+			background-color: #dc3545;
+			border-color: #dc3545;
+		}
+
+		/* Style for table rows on hover */
+		tbody tr:hover {
+			background-color: #f2f2f2;
+			cursor: pointer;
+		}
+	</style>
+</head>
+
+<body>
+	<div class="container mt-5">
+		<h2 class="header-content">Job Applications</h2>
+		<table class="table">
+			<thead>
+				<tr>
+					<th>User ID</th>
+					<th>User Email</th>
+					<th>User Mobile No</th>
+					<th>User Resume</th>
+					<th>Job ID</th>
+					<th>Job Title</th>
+					<th>Actions</th>
+				</tr>
+			</thead>
+			<tbody>
+
+				<tr th:each="jobApplication : ${jobApplications}" class="table-light">
+
+					<td th:text="${jobApplication.user.id}"></td>
+					<td th:text="${jobApplication.user.email}"></td>
+					<td th:text="${jobApplication.user.mobile}"></td>
+
+					<td>
+						<a th:href="'/downloadFile?userId=' + ${jobApplication.user.id}"
+							class="btn btn-primary btn-sm">Download Resume</a>
+					</td>
+
+					<td th:text="${jobApplication.jobPosting.id}"></td>
+					<td th:text="${jobApplication.jobPosting.profile}"></td>
+
+					<td>
+						<div class="row">
+							<div class="col">
+								<form method="post" action="/company/accept-job">
+									<input type="hidden" name="jobId" th:value="${jobApplication.id}" />
+									<button type="submit" class="btn btn-info btn-sm btn-accept"
+									
+										id="acceptButton${jobApplication.id}">Accept</button>
+								</form>
+
+							</div>
+							<div class="col">
+								<form method="post" action="/company/delete-job-application">
+									<input type="hidden" name="jobId" th:value="${jobApplication.id}" />
+									<button type="submit" class="btn btn-danger btn-sm ">Decline</button>
+								</form>
+							</div>
+						</div>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+		<a th:href="@{'/company/dashboard'}" class="btn btn-info">Back to home</a>
+	</div>
+
+
+	<!--unique format job application-->
+	<!--<div class="container mt-5">
+		<h2 class="header-content">Job Applications</h2>
+		<div class="row">
+			 Iterate over jobApplications list 
+			<div th:each="jobApplication : ${jobApplications}" class="col-md-4 mb-4">
+				<div class="card">
+					<div class="card-body">
+						 Display user information 
+						<p class="card-title">User ID: <span th:text="${jobApplication.user.id}"></span></p>
+						<p class="card-text">User Email: <span th:text="${jobApplication.user.email}"></span></p>
+						<p class="card-text">User Mobile No: <span th:text="${jobApplication.user.mobile}"></span></p>
+						 Display download link for user's resume 
+						<a th:href="'/downloadFile?userId=' + ${jobApplication.user.id}"
+							class="btn btn-primary btn-sm">Download Resume</a>
+						 Display job information 
+						<hr>
+						<p class="card-text">Job ID: <span th:text="${jobApplication.jobPosting.id}"></span></p>
+						<p class="card-text">Job Title: <span th:text="${jobApplication.jobPosting.profile}"></span></p>
+						 Display accept and reject buttons 
+						<hr>
+						<div class="row">
+							<div class="col">
+								<form method="post" action="/company/accept-job">
+									<input type="hidden" name="jobId" th:value="${jobApplication.id}" />
+									<button type="submit" class="btn btn-info btn-sm btn-accept">Accept</button>
+								</form>
+							</div>
+							<div class="col">
+								<form method="post" action="/company/delete-job-application">
+									<input type="hidden" name="jobId" th:value="${jobApplication.id}" />
+									<button type="submit" class="btn btn-danger btn-sm">Decline</button>
+								</form>
+							</div>
+						</div>
+
+
+					</div>
+				</div>
+			</div>
+		</div>
+		<a th:href="@{'/company/dashboard'}" class="btn btn-info">Back to home</a>
+	</div>-->
+
+
+	<!-- Bootstrap JS (optional, only if needed) -->
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"
+		integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shCk5WVa7Z9HqUyo5yyCw8g+8AtXVGaX3MKqt"
+		crossorigin="anonymous"></script>
+	<script>
+		function rejectJob(jobId) {
+			// Display confirmation dialog
+			if (confirm("Are you sure you want to reject this job application?")) {
+				// If confirmed, submit form to delete the job application
+				var form = document.createElement('form');
+				form.method = 'post';
+				form.action = '/company/delete-job-application'; // Change the action as per your endpoint
+
+				// Add jobId as a hidden input field
+				var input = document.createElement('input');
+				input.type = 'hidden';
+				input.name = 'jobId';
+				input.value = jobId;
+
+				// Append input field to form
+				form.appendChild(input);
+
+				// Append form to the body and submit
+				document.body.appendChild(form);
+				form.submit();
+			}
+		}
+
+
+
+
+		
+
+	</script>
+
+
+
+</body>
+
+</html>

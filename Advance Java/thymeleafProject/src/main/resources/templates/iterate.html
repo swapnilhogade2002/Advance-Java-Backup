@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="ISO-8859-1">
+	<title>Insert title here</title>
+</head>
+
+<body>
+	<h1>Iterate Thymeleaf</h1>
+	<h2 th:text="${names}"></h2>
+
+	<ul th:each="n: ${names}">
+		<li th:text=${n}></li>
+	</ul>
+</body>
+
+</html>

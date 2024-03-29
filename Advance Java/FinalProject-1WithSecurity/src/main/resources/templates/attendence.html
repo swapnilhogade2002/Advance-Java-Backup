@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<!-- Required meta tags -->
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+	<!-- Bootstrap CSS -->
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css"
+		integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+
+	<!-- Add SweetAlert CSS -->
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.20/dist/sweetalert2.min.css">
+
+	<title>Attendance</title>
+
+	<style>
+		body {
+			background-color: #f8f9fa;
+			/* Bootstrap background color */
+		}
+
+		.container {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			min-height: 80vh;
+		}
+
+		#currentTime {
+			font-size: 36px;
+			margin-top: 20px;
+			color: #007bff;
+			/* Bootstrap primary color */
+		}
+
+		.btn-primary,
+		.btn-danger {
+			font-size: 20px;
+			margin-top: 20px;
+			transition: transform 0.3s ease-in-out;
+		}
+
+		.btn-primary:hover,
+		.btn-danger:hover {
+			transform: scale(1.1);
+		}
+	</style>
+
+</head>
+
+<body>
+	<header>
+		<!-- Navbar -->
+		<nav class="navbar navbar-expand-lg bg-dark">
+			<div class="container-fluid">
+				<button data-mdb-collapse-init class="navbar-toggler" type="button" data-mdb-target="#navbarExample01"
+					aria-controls="navbarExample01" aria-expanded="false" aria-label="Toggle navigation">
+					<i class="fas fa-bars"></i>
+				</button>
+				<div class="collapse navbar-collapse" id="navbarExample01">
+					<!-- Add the button to the right side -->
+					<ul class="navbar-nav ml-auto">
+						<li class="nav-item active">
+							<a th:href="@{/employee/profile}" class="btn btn-info mt-2 mx-3">Back</a>
+						</li>
+						<a th:href="@{/login}" class="btn btn-warning mt-2 mx-3">Logout</a>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</nav>
+		<!-- Navbar -->
+	</header>
+
+	<div class="container mb-4">
+		<!-- Punch In/Out Form -->
+		<form th:action="@{/punch}" method="post">
+			<div class="form-group">
+				<label for="userId"><b>Enter Manager ID:</b></label>
+				<!-- Set the value dynamically -->
+				<input type="text" class="form-control" id="userId" name="userId" th:value="${email}" readonly required>
+			</div>
+	</div>
+
+	<h2 th:text="${employees.email}">email</h2>
+
+	<!-- Display current time -->
+	<div id="currentTime" class="text-primary"></div><br>
+
+	<div class="text-center">
+		<button type="submit" class="btn btn-outline-primary" name="action" value="in" id="punchInButton">Punch
+			In</button>
+		<button type="submit" class="btn btn-outline-danger" name="action" value="out" id="punchOutButton">Punch
+			Out</button>
+	</div>
+	</form>
+	</div>
+
+	<!--footer-->
+	<footer class="bg-dark text-white text-center text-lg-start">
+		<!-- Copyright -->
+		<div class="text-center p-3">
+			© 2023 Copyright:
+			<a class="text-white" href="https://aress.com/">Aress</a>
+		</div>
+		<!-- Copyright -->
+	</footer>
+	<!--footer-->
+
+	<!-- Add SweetAlert and jQuery scripts -->
+	<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
+		integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
+		crossorigin="anonymous"></script>
+	<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+		integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+		crossorigin="anonymous"></script>
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/js/bootstrap.min.js"
+		integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+		crossorigin="anonymous"></script>
+	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.20/dist/sweetalert2.min.js"></script>
+
+	<!-- Your JavaScript code -->
+	<script th:inline="javascript">
+		function updateCurrentTime() {
+			var currentTimeElement = document.getElementById('currentTime');
+			var now = new Date();
+			var hours = now.getHours();
+			var ampm = hours >= 12 ? 'PM' : 'AM';
+			hours = hours % 12 || 12; // Convert to 12-hour format
+			var formattedTime =
+				hours +
+				':' +
+				(now.getMinutes() < 10 ? '0' : '') +
+				now.getMinutes() +
+				':' +
+				(now.getSeconds() < 10 ? '0' : '') +
+				now.getSeconds() +
+				' ' +
+				ampm;
+			currentTimeElement.innerHTML = '<strong>Current Time:</strong> ' + formattedTime;
+		}
+
+		function punch(action) {
+			// Disable buttons for one minute
+			var punchInButton = document.getElementById('punchInButton');
+			var punchOutButton = document.getElementById('punchOutButton');
+
+			punchInButton.disabled = true;
+			punchOutButton.disabled = true;
+
+			setTimeout(function () {
+				// Enable buttons after one minute
+				punchInButton.disabled = false;
+				punchOutButton.disabled = false;
+			}, 60000); // 60000 milliseconds = 1 minute
+
+			// Update the time every second
+			setInterval(updateCurrentTime, 1000);
+
+			// Initial update
+			updateCurrentTime();
+		}
+
+		function showAlert(status, message) {
+			if (status === 'success') {
+				Swal.fire({
+					icon: 'success',
+					title: 'Success',
+					text: message,
+					onClose: function () {
+						// Redirect to the attendance page after 5 seconds
+						setTimeout(function () {
+							window.location.href = '/attendance'; // Change the URL as needed
+						}, 5000);
+					},
+				});
+			} else {
+				Swal.fire({
+					icon: 'error',
+					title: 'Error',
+					text: 'Error: ' + message,
+				});
+			}
+		}
+
+		function submitForm(action) {
+			$.ajax({
+				type: 'POST',
+				url: '/punch',
+				data: {action: action},
+				success: function (response) {
+					showAlert(response.status, response.message);
+				},
+				error: function (error) {
+					showAlert('error', 'Error: ' + error.responseText);
+				},
+			});
+		}
+	</script>
+</body>
+
+</html>

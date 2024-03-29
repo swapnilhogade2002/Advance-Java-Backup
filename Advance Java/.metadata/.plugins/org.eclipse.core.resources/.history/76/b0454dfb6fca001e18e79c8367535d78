@@ -1,0 +1,468 @@
+<!-- layout.html -->
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:fragment="layout(content)">
+
+<head>
+	<!-- Required meta tags -->
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+	<!-- Bootstrap CSS -->
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css"
+		integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+		integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA=="
+		crossorigin="anonymous" referrerpolicy="no-referrer" />
+	<link rel="stylesheet" th:href="@{/css/base.css}">
+	<title>Index</title>
+	<style>
+		/* Add this to your existing CSS or in a style tag in your HTML file */
+
+		html,
+		body {
+			height: 100%;
+			margin: 0;
+		}
+
+		body {
+			background: white;
+			display: flex;
+			flex-direction: column;
+		}
+
+		.container {
+			flex: 1;
+		}
+
+		footer {
+			position: sticky;
+			bottom: 0;
+			width: 100%;
+			z-index: 100;
+		}
+
+		.dynamic-card {
+			border: 4px solid #00B074;
+			border-radius: 10px;
+			overflow: hidden;
+			transition: transform 0.3s;
+			cursor: pointer;
+			background-color: #ffff;
+			margin-bottom: 15px;
+			/* Add margin to create space between cards */
+		}
+
+		.dynamic-card:hover {
+			transform: scale(1.05);
+		}
+
+		.card-img {
+			width: 100%;
+			height: 200px;
+			object-fit: cover;
+		}
+
+		.card-body {
+			padding: 20px;
+			text-align: center;
+			font-weight: 800;
+			font-family: Verdana, Geneva, Tahoma, sans-serif;
+		}
+
+		.navbar {
+			background-color: #00B074 !important;
+		}
+
+		.btn-info {
+			background-color: #FFFF;
+			color: black !important;
+			margin-top: 10px;
+		}
+
+		.count-display {
+			font-size: 24px;
+			/* Adjust font size as needed */
+			color: #00B074;
+			/* Choose your preferred color */
+			margin-top: 10px;
+			/* Add top margin for spacing */
+			font-weight: 800;
+			text-align: center;
+		}
+
+		/* Adjustments for Sidebar */
+
+		@keyframes zoomAnimation {
+			0% {
+				transform: scale(1);
+			}
+
+			50% {
+				transform: scale(1.1);
+			}
+
+			100% {
+				transform: scale(1);
+			}
+		}
+
+		@keyframes bounceAnimation {
+
+			0%,
+			100% {
+				transform: translateY(0);
+			}
+
+			50% {
+				transform: translateY(-10px);
+			}
+		}
+
+		.animate__animated {
+			animation-duration: 1s;
+			animation-fill-mode: both;
+		}
+
+		.animate__zoom {
+			animation-name: zoomAnimation;
+			animation-iteration-count: infinite;
+		}
+
+		.animate__bounce {
+			animation-name: bounceAnimation;
+			animation-iteration-count: infinite;
+		}
+	</style>
+</head>
+
+<body>
+	<!--header-->
+	<nav class="navbar navbar-expand-lg navbar-dark bg-info">
+		<a class="navbar-brand" href="#"><b>Admin Dashboard</b></a>
+		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+			aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+			<span class="navbar-toggler-icon"></span>
+		</button>
+
+		<div class="collapse navbar-collapse" id="navbarSupportedContent">
+			<ul class="navbar-nav ml-auto">
+				<li class="nav-item active">
+					<a class="nav-link" }></a>
+				</li>
+				<li class="nav-item ">
+					<a class="nav-link btn btn-info" th:href="@{/logout}"><b>Logout</b></a>
+				</li>
+			</ul>
+		</div>
+	</nav>
+
+	<div class="mt-2">
+		<div class="sidebar">
+			<span onclick="toggleSidebar()" class="cross-btn">&times;</span>
+			<a href="#" th:href="@{/}" class="item"><i class="fa-solid fa-house"></i> Home</a>
+			<a href="#" th:href="@{/manager/users-data}" class="item"><i class="fa-solid fa-eye"></i> View User Data
+				<br><small>( All Data of User on JobHunter Website )</small>
+			</a>
+
+			<a href="#" th:href="@{/manager/show-feedback}" class="item"><i class="fas fa-plus-circle"></i> Show
+				Feedback
+				<br><small>( See a user feedback and take action on it. )</small></a>
+
+			<!--	<a href="#" th:href="@{/manager/profile}" class="item"><i class="fas fa-user"></i> Your Profile
+				<br><small>( View your own profile. )</small></a>
+
+			<a href="#" th:href="@{/manager/add-company}" class="item"><i class="fas fa-building"></i> Add Company
+				<br><small>( Register new company. )</small>
+			</a>-->
+			<!--<a href="#" th:href="@{/manager/feedback}" class="item"><i class="fas fa-comment"></i> Feedback
+				<br><small>( See our website feedback from user. )</small>
+			</a>-->
+			<a href="#" th:href="@{/logout}" class="item"><i class="fas fa-sign-out-alt"></i> Logout</a>
+
+			<div class="divider"></div>
+		</div>
+
+		<div class="content "> <!-- Add margin from top -->
+			<i onclick="toggleSidebar()" class="fas fa-bars m-3"></i>
+
+			<!--Admin dashboard start -->
+			<!--1st row-->
+			<div class="container">
+				<div class="row">
+					<!-- First Row -->
+					<div class="col-md-4 ">
+						<div class="dynamic-card animate__animated animate__bounce" onclick="changeContent(this)">
+							<img src="/img/total-company.jpg" class="card-img" alt="Card Image">
+							<div class="card-body">
+								<h5 class="card-title">Total Company</h5>
+								<p class="count-display">
+									<span th:text="${companyCount}">0</span>
+								</p>
+							</div>
+						</div>
+					</div>
+
+					<div class="col-md-4 ">
+						<div class="dynamic-card animate__animated animate__bounce" onclick="changeContent(this)">
+							<img src="/img/total-user.png" class="card-img" alt="Card Image">
+							<div class="card-body">
+								<h5 class="card-title">Total User of jobHunter</h5>
+								<p class="count-display"> <span th:text="${totalUserCount}">0</span></p>
+							</div>
+						</div>
+					</div>
+
+					<div class="col-md-4 ">
+						<div class="dynamic-card animate__animated animate__bounce" onclick="changeContent(this)">
+							<img src="/img/job-seeker.jpg" class="card-img" alt="Card Image">
+							<div class="card-body">
+								<h5 class="card-title">Total Job seeker</h5>
+								<p class="count-display"> <span th:text="${userCount}">0</span></p>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+
+			<!--2nd row-->
+			<div class="container ">
+				<div class="row">
+					<!-- First Row -->
+					<div class="col-md-4">
+						<div class="dynamic-card animate__animated animate__bounce" onclick="changeContent(this)">
+							<img src="/img/HR.jpg" class="card-img" alt="Card Image">
+							<div class="card-body">
+								<h5 class="card-title">Human Resource Jobs</h5>
+								<p class="count-display">
+									<span th:text="${HumanResource}">0</span>
+								</p>
+							</div>
+						</div>
+					</div>
+
+					<div class="col-md-4 ">
+						<div class="dynamic-card animate__animated animate__bounce" onclick="changeContent(this)">
+							<img src="/img/bussiness-development.jpg" class="card-img" alt="Card Image">
+							<div class="card-body">
+								<h5 class="card-title">Bussiness Development Jobs</h5>
+								<p class="count-display"> <span th:text="${BussinessDevelopment}">0</span></p>
+							</div>
+						</div>
+					</div>
+
+					<div class="col-md-4">
+						<div class="dynamic-card animate__animated animate__bounce" onclick="changeContent(this)">
+							<img src="/img/customer-service.jpg" class="card-img" alt="Card Image">
+							<div class="card-body">
+								<h5 class="card-title">Custome Service Jobs</h5>
+								<p class="count-display"> <span th:text="${CustomeService}">0</span></p>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<!--3rd row-->
+
+			<div class="container ">
+				<div class="row">
+					<!-- First Row -->
+					<div class="col-md-4 ">
+						<div class="dynamic-card animate__animated animate__bounce" onclick="changeContent(this)">
+							<img src="/img/design-creative.jpg" class="card-img" alt="Card Image">
+							<div class="card-body">
+								<h5 class="card-title">Design And Creative Jobs</h5>
+								<p class="count-display">
+									<span th:text="${DesignAndCreative}">0</span>
+								</p>
+							</div>
+						</div>
+					</div>
+
+					<div class="col-md-4 ">
+						<div class="dynamic-card animate__animated animate__bounce" onclick="changeContent(this)">
+							<img src="/img/marketing.jpg" class="card-img" alt="Card Image">
+							<div class="card-body">
+								<h5 class="card-title">Marketing Jobs</h5>
+								<p class="count-display"> <span th:text="${Marketing}">0</span></p>
+							</div>
+						</div>
+					</div>
+
+					<div class="col-md-4 ">
+						<div class="dynamic-card animate__animated animate__bounce" onclick="changeContent(this)">
+							<img src="/img/project-management.jpg" class="card-img" alt="Card Image">
+							<div class="card-body">
+								<h5 class="card-title">Project Management Jobs</h5>
+								<p class="count-display"> <span th:text="${ProjectManagement}">0</span></p>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<!--4th row-->
+			<div class="container">
+				<div class="row">
+					<!-- First Row -->
+					<div class="col-md-4 ">
+						<div class="dynamic-card animate__animated animate__bounce" onclick="changeContent(this)">
+							<img src="/img/sales-communications.png" class="card-img" alt="Card Image">
+							<div class="card-body">
+								<h5 class="card-title">Sales And Communications Jobs</h5>
+								<p class="count-display">
+									<span th:text="${SalesAndCommunication}">0</span>
+								</p>
+							</div>
+						</div>
+					</div>
+
+					<div class="col-md-4 ">
+						<div class="dynamic-card animate__animated animate__bounce" onclick="changeContent(this)">
+							<img src="/img/teaching.jpg" class="card-img" alt="Card Image">
+							<div class="card-body">
+								<h5 class="card-title">Teaching And Educations Jobs </h5>
+								<p class="count-display"> <span th:text="${TeachingAndEducation}">0</span></p>
+							</div>
+						</div>
+					</div>
+
+					<div class="col-md-4 ">
+						<div class="dynamic-card animate__animated animate__bounce" onclick="changeContent(this)">
+							<img src="/img/job-seeker.jpg" class="card-img" alt="Card Image">
+							<div class="card-body">
+								<h5 class="card-title">Project Management Jobs</h5>
+								<p class="count-display"> <span th:text="${ProjectManagement}">0</span></p>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!--Admin dashboard end -->
+
+
+
+
+
+
+			<!-- Footer Start -->
+			<!--	<div class="container-fluid bg-dark text-white-50 footer pt-5 mt-5 wow fadeIn" data-wow-delay="0.1s">
+			<div class="container py-5">
+				<div class="row g-5">
+					<div class="col-lg-3 col-md-6">
+						<h5 class="text-white mb-4">Company</h5>
+						<a class="btn btn-link text-white-50" href="">About Us</a>
+						<a class="btn btn-link text-white-50" href="">Contact Us</a>
+						<a class="btn btn-link text-white-50" href="">Our Services</a>
+						<a class="btn btn-link text-white-50" href="">Privacy Policy</a>
+						<a class="btn btn-link text-white-50" href="">Terms & Condition</a>
+					</div>
+					<div class="col-lg-3 col-md-6">
+						<h5 class="text-white mb-4">Quick Links</h5>
+						<a class="btn btn-link text-white-50" href="">About Us</a>
+						<a class="btn btn-link text-white-50" href="">Contact Us</a>
+						<a class="btn btn-link text-white-50" href="">Our Services</a>
+						<a class="btn btn-link text-white-50" href="">Privacy Policy</a>
+						<a class="btn btn-link text-white-50" href="">Terms & Condition</a>
+					</div>
+					<div class="col-lg-3 col-md-6">
+						<h5 class="text-white mb-4">Contact</h5>
+						<p class="mb-2"><i class="fa fa-map-marker-alt me-3"></i>Rewa, Madhya Pradesh, IND</p>
+						<p class="mb-2"><i class="fa fa-phone-alt me-3"></i>+91199919199</p>
+						<p class="mb-2"><i class="fa fa-envelope me-3"></i>info@ajaykumar.com</p>
+						<div class="d-flex pt-2">
+							<a class="btn btn-outline-light btn-social" href=""><i class="fab fa-twitter"></i></a>
+							<a class="btn btn-outline-light btn-social" href=""><i class="fab fa-facebook-f"></i></a>
+							<a class="btn btn-outline-light btn-social" href=""><i class="fab fa-youtube"></i></a>
+							<a class="btn btn-outline-light btn-social" href=""><i class="fab fa-linkedin-in"></i></a>
+						</div>
+					</div>
+					<div class="col-lg-3 col-md-6">
+						<h5 class="text-white mb-4">Newsletter</h5>
+						<p>Dolor amet sit justo amet elitr clita ipsum elitr est.</p>
+						<div class="position-relative mx-auto" style="max-width: 400px;">
+							<input class="form-control bg-transparent w-100 py-3 ps-4 pe-5" type="text"
+								placeholder="Your email">
+							<button type="button"
+								class="btn btn-primary py-2 position-absolute top-0 end-0 mt-2 me-2">SignUp</button>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="container">
+				<div class="copyright">
+					<div class="row">
+						<div class="col-md-6 text-center text-md-start mb-3 mb-md-0">
+							&copy; <a class="border-bottom" href="#">JobHunter</a>, All Right Reserved.
+						</div>
+						<div class="col-md-6 text-center text-md-end">
+							<div class="footer-menu">
+								<a href="">Home</a>
+								<a href="">Cookies</a>
+								<a href="">Help</a>
+								<a href="">FQAs</a>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>-->
+			<!-- Footer End -->
+
+
+			<!-- Back to Top -->
+			<a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
+
+
+		</div>
+
+		<!-- Optional JavaScript -->
+		<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+		<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
+			integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
+			crossorigin="anonymous"></script>
+		<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+			integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+			crossorigin="anonymous"></script>
+		<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/js/bootstrap.min.js"
+			integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+			crossorigin="anonymous"></script>
+		<script th:src="@{/js/base.js}"></script>
+		<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+
+		<script>
+			function deleteContact(cid) {
+				swal({
+					title: "Are you sure?",
+					text: "You want to delete this contact...",
+					icon: "warning",
+					buttons: true,
+					dangerMode: true,
+				})
+					.then((willDelete) => {
+						if (willDelete) {
+							window.location = "/user/delete/" + cid;
+						} else {
+							swal("Your Contact is safe !!");
+						}
+					});
+			}
+
+			// Example function to change content dynamically
+			function changeContent(card) {
+				// Simulate changing content
+				var newTitle = "jobHunter";
+				var newContent = "This is the dynamically updated content.";
+
+				// Change the content of the clicked card
+				$(card).find('.card-title').text(newTitle);
+				$(card).find('.card-text').text(newContent);
+
+				// You can add more logic or fetch dynamic content from a server using AJAX.
+			}
+		</script>
+
+</body>
+
+</html>

@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>Employee Attendance List</title>
+</head>
+
+<body>
+    <h2>Employee Attendance List</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Employee ID</th>
+                <th>Date</th>
+                <th>Total Work Hours</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="attendance : ${employeeAttendanceList}">
+                <td th:text="${attendance.id}"></td>
+                <td th:text="${attendance.employeeId}"></td>
+                <td th:text="${attendance.date}"></td>
+                <td th:text="${attendance.totalWorkHours}"></td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+
+</html>

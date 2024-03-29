@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<title>Show Data</title>
+
+	<!-- Bootstrap CSS -->
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+		integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+</head>
+
+<body>
+	<div class="container mt-4">
+		<table class="table table-bordered">
+			<div container="text-center mt-4">
+				<h4>Books Data Management</h4>
+				<!--search bar-->
+				<form th:action="@{/client/search}" method="get" class="form-inline mb-4">
+					<div class="input-group">
+						<input type="text" class="form-control" name="query" placeholder="Search by Title...." />
+						<div class="input-group-append">
+							<button class="btn btn-secondary" type="submit">Search</button>
+						</div>
+					</div>
+				</form>
+				<div class="text-left mt-3">
+					<a th:href="@{/client/new}" class="btn btn-outline-success btn-sm">Add New</a>
+				</div>
+				<!-- buttons sorting -->
+
+				<!--	<a th:href="@{/client?sortBy=title}" class="btn btn-link">Sort by Title</a>
+				<a th:href="@{/client?sortBy=completed}" class="btn btn-link">Sort by Completed</a>-->
+
+			</div>
+
+			<thead class="thead-dark">
+				<tr>
+					<th>User ID</th>
+					<th>ID</th>
+					<th>Title</th>
+					<th>Completed</th>
+					<th>Operations</th>
+				</tr>
+			</thead>
+			<tbody>
+				<!-- Iterate over the list of todos -->
+				<tr th:each="todo : ${todos}">
+					<td th:text="${todo.userId}"></td>
+					<td th:text="${todo.id}"></td>
+					<td th:text="${todo.title}"></td>
+					<td th:text="${todo.completed}"></td>
+					<td>
+						<a th:href="@{/client/edit/{taskId}(taskId=${todo.id})}"
+							class="btn btn-outline-primary">Edit</a>
+						<a th:href="@{/client/delete/{taskId}(taskId=${todo.id})}" class="btn btn-outline-danger"
+							onclick="confirmDelete('${todo.id}')">Delete</a>
+						<a th:href="@{/client/{taskId}(taskId=${todo.id})}" class="btn btn-outline-info">View</a>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+		<a th:href="@{/client}" class="btn btn-danger mt-3">Back</a>
+	</div>
+	<script>
+		function confirmDelete(taskId) {
+			Swal.fire({
+				title: 'Are you sure?',
+				text: 'You will not be able to recover this data!',
+				icon: 'warning',
+				showCancelButton: true,
+				confirmButtonColor: '#d33',
+				cancelButtonColor: '#3085d6',
+				confirmButtonText: 'Yes, delete it!'
+			}).then((result) => {
+				if (result.isConfirmed) {
+					// Redirect to the delete URL or perform the delete action
+					window.location.href = '/client/delete/' + taskId;
+				}
+				// Note: No need for an else block here, as the default link behavior will be prevented
+			});
+
+			// Prevent the default behavior of the link
+			return false;
+		}
+	</script>
+
+	<!-- Bootstrap JS (optional, but needed for some features like dropdowns, modals, etc.) -->
+	<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+		integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+		crossorigin="anonymous"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+		integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+		crossorigin="anonymous"></script>
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+		integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+		crossorigin="anonymous"></script>
+
+	<!-- SweetAlert2 JS -->
+	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</body>
+
+</html>
+
+
+
+
+<!--
+
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<title>Show Data</title>
+
+	 Bootstrap CSS 
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+		integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+</head>
+
+<body>
+
+	<div class="container mt-4">
+		<table class="table table-bordered">
+			<div container="text-center mt-4">
+				<h4>Books Data Management</h4>
+				 showData.html 
+
+				<a th:href="@{/client?sortBy=title}" class="btn btn-link">Sort by Title</a>
+				<a th:href="@{/client?sortBy=completed}" class="btn btn-link">Sort by Completed</a>
+				 Add more links/buttons for other fields as needed 
+
+				<div class="text-left mt-3">
+					<a th:href="@{/client/new}" class="btn btn-success">Add New</a>
+				</div>
+			</div>
+
+			<thead class="thead-dark">
+				<tr>
+					<th>User ID</th>
+					<th>ID</th>
+					<th>Title</th>
+					<th>Completed</th>
+					<th>Operations</th>
+				</tr>
+			</thead>
+			<tbody>
+				 Iterate over the list of todos 
+				<tr th:each="todo : ${todos}">
+					<td th:text="${todo.userId}"></td>
+					<td th:text="${todo.id}"></td>
+					<td th:text="${todo.title}"></td>
+					<td th:text="${todo.completed}"></td>
+					<td>
+						<a th:href="@{/client/edit/{taskId}(taskId=${todo.id})}" class="btn btn-primary">Edit</a>
+						<a th:href="@{/client/delete/{taskId}(taskId=${todo.id})}" class="btn btn-danger"
+							onclick="confirmDelete('${todo.id}')">Delete</a>
+						<a th:href="@{/client/{taskId}(taskId=${todo.id})}" class="btn btn-info">View</a>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+
+	 Bootstrap JS (optional, but needed for some features like dropdowns, modals, etc.) 
+	<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+		integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+		crossorigin="anonymous"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+		integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+		crossorigin="anonymous"></script>
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+		integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+		crossorigin="anonymous"></script>
+
+	 SweetAlert2 JS 
+	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+	<script>
+		function confirmDelete(taskId) {
+			Swal.fire({
+				title: 'Are you sure?',
+				text: 'You will not be able to recover this data!',
+				icon: 'warning',
+				showCancelButton: true,
+				confirmButtonColor: '#d33',
+				cancelButtonColor: '#3085d6',
+				confirmButtonText: 'Yes, delete it!'
+			}).then((result) => {
+				if (result.isConfirmed) {
+					// Redirect to the delete URL or perform the delete action
+					window.location.href = '/client/delete/' + taskId;
+				} else {
+					// Return false to prevent the default link behavior
+					return false;
+				}
+			});
+		}
+	</script>
+
+
+
+</body>
+
+</html>-->

@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="user/base::layout(~{::section})">
+
+<head>
+	<meta charset="ISO-8859-1">
+	<title>Add Contact</title>
+</head>
+
+<body>
+	<h1>Add Contact</h1>
+	<section>
+		<div class="content">
+
+		</div>
+		<div class="card">
+
+			<div th:if="${session.message}" class="container">
+				<div th:classappend="${'alert-'+session.message.type}" class="alert text-center" role="alert">
+					<span th:text="${session.message.content}"></span>
+				</div>
+				<script>
+					// Use JavaScript to remove the session message after 5000 milliseconds (5 seconds)
+					setTimeout(function () {
+						/* 
+						   Assuming 'message' is the attribute you want to remove from the session. 
+						   If it's a different attribute, update the code accordingly.
+						*/
+						/* Remove the message attribute from the session */
+						/* Note: This is just an example and may need adjustment based on your exact session handling */
+						/* The URL in the below example is just a placeholder; replace it with the actual URL for removing the message from the session */
+						fetch('/removeMessageFromSession')
+							.then(response => response.json())
+							.then(data => console.log(data))
+							.catch(error => console.error('Error removing message:', error));
+
+						/* Remove the alert div from the DOM */
+						document.querySelector('.alert').remove();
+					}, 5000);  // 5000 milliseconds = 5 seconds
+				</script>
+			</div>
+
+
+			<div class="card-body">
+
+				<div class="card-body">
+					<h1 class="text-center">Add Contact</h1>
+					<div class="container-fluid mt-1">
+						<div class="row">
+							<div class="col-md-10 offset-md-1">
+								<form th:object="${contact}" enctype="multipart/form-data" method="post"
+									th:action="@{/user/process-contact}" class="mt-2">
+
+
+									<!--contact name-->
+									<div class="form-row">
+										<div class="input-group mb-3">
+											<div class="input-group-prepend">
+												<div class="input-group-text">
+													<i class="fa-solid fa-file-signature"></i>
+												</div>
+											</div>
+											<input type="text" class="form-control" placeholder="Enter contact name"
+												name="name">
+										</div>
+									</div>
+
+									<!--contact name-->
+									<div class="form-row">
+										<div class="input-group mb-3">
+											<div class="input-group-prepend">
+												<div class="input-group-text">
+													<i class="fa-regular fa-circle-user"></i>
+												</div>
+											</div>
+											<input type="text" class="form-control" placeholder="Enter nick name"
+												name="surname">
+										</div>
+									</div>
+
+
+									<!--email name-->
+									<div class="form-row">
+										<div class="input-group mb-3">
+											<div class="input-group-prepend">
+												<div class="input-group-text">
+													<i class="fa-regular fa-envelope"></i>
+												</div>
+											</div>
+											<input type="text" class="form-control" placeholder="Enter email"
+												name="	email">
+										</div>
+									</div>
+
+									<!--phone-->
+									<div class="form-row">
+										<div class="input-group mb-3">
+											<div class="input-group-prepend">
+												<div class="input-group-text">
+													<i class="fa-solid fa-phone"></i>
+												</div>
+											</div>
+											<input type="number" class="form-control"
+												placeholder="Enter contact number." name="phone">
+										</div>
+									</div>
+
+									<!--work name-->
+									<div class="form-row">
+										<div class="input-group mb-3">
+											<div class="input-group-prepend">
+												<div class="input-group-text">
+													<i class="fa-solid fa-briefcase"></i>
+												</div>
+											</div>
+											<input type="text" class="form-control" placeholder="Enter work."
+												name="work">
+										</div>
+									</div>
+
+									<!--description-->
+									<div class="form-row">
+										<div class="input-group mb-3">
+											<div class="input-group-prepend">
+												<div class="input-group-text">
+													<i class="fa-solid fa-info"></i>
+												</div>
+											</div>
+											<input type="text" class="form-control" placeholder="Enter description."
+												name="description">
+										</div>
+
+
+									</div>
+
+									<!--file upload-->
+
+									<div class="form-row">
+										<div class="input-group mb-3">
+											<div class="container">
+												<input type="file" name="image">
+											</div>
+										</div>
+									</div>
+
+
+
+
+									<button type="submit" class="btn btn-primary">Add Details</button>
+
+								</form>
+
+							</div>
+						</div>
+					</div>
+
+				</div>
+			</div>
+		</div>
+
+	</section>
+
+
+
+</body>
+
+</html>

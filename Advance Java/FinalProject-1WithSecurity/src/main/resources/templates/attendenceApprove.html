@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="UTF-8">
+	<title>Manager</title>
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+		integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8sh+Wyj4FFdN1mG/oRqi1tuwyl1i5c5GmkJfN" crossorigin="anonymous">
+	<!-- Bootstrap CSS -->
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+	<!-- Add other stylesheets or scripts if needed -->
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.20/dist/sweetalert2.min.css">
+
+	<style>
+		/* Add custom styles for the sidebar */
+		body {
+			padding-top: 56px;
+			height: 100vh;
+			/* 100% of the viewport height */
+			overflow: hidden;
+			/* Hide vertical scrollbar */
+		}
+
+		.navbar {
+			background-color: rgb(0, 0, 64);
+		}
+
+		.navbar-brand {
+			color: #ffffff;
+		}
+
+		.navbar-nav .nav-link {
+			color: #ffffff;
+		}
+
+		.navbar-toggler-icon {
+			background-color: #ffffff;
+		}
+
+		.main-content {
+			height: calc(100% - 50px);
+			/* Set to the height of the footer */
+			overflow-y: auto;
+			/* Allow vertical scrolling within the main content */
+		}
+
+		.footer {
+			height: 50px;
+			/* Set to the height of your footer */
+			background-color: #343a40;
+			/* Dark background color for the footer */
+			color: #ffffff;
+			/* White text color for the footer */
+			position: fixed;
+			bottom: 0;
+			width: 100%;
+		}
+	</style>
+</head>
+
+<body>
+
+	<!-- Start Navbar -->
+	<nav class="navbar navbar-expand-lg fixed-top">
+		<div class="container-fluid">
+			<a class="navbar-brand" href="#">Employee Management System</a>
+			<button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+				data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+				aria-label="Toggle navigation">
+				<span class="navbar-toggler-icon"></span>
+			</button>
+			<div class="collapse navbar-collapse" id="navbarSupportedContent">
+
+				<!-- Add Logout button -->
+				<ul class="navbar-nav ml-auto">
+					<li class="nav-item">
+						<a th:href="@{/login}" class="btn btn-danger mt-2 mx-3">Logout</a>
+					</li>
+					<li class="nav-item">
+						<a th:href="@{/manager/profile}" class="btn btn-warning mt-2 mx-3">Back</a>
+					</li>
+				</ul>
+			</div>
+		</div>
+	</nav>
+	<!-- End Navbar -->
+
+	<!-- Main content -->
+	<main role="main" class="main-content">
+		<section class="container mt-5">
+			<div class="container">
+				<h5 class="mt-4 mb-4">Management Section</h5>
+				<!--sarch bar-->
+				<div class="input-group mb-3">
+					<input type="text" class="form-control" placeholder="Search..." id="searchInput">
+					<div class="input-group-append">
+						<button class="btn btn-outline-secondary" type="button"
+							onclick="performSearch()">Search</button>
+					</div>
+				</div>
+
+				<!-- Display a table with employee information -->
+				<table class="table table-bordered">
+					<thead class="thead-dark">
+						<tr>
+							<th>ID</th>
+							<th>User Id</th>
+							<th>Punch In Time</th>
+							<th>Punch Out Time</th>
+							<th>Action</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr th:each="timestamp : ${timestampEntityList}">
+							<td th:text="${timestamp.id}"></td>
+							<td th:text="${timestamp.userId}"></td>
+							<td th:text="${timestamp.punchInTime}"></td>
+							<td th:text="${timestamp.punchOutTime}"></td>
+							<td>
+								<div class="btn-group" role="group">
+									<a class="btn btn-outline-info btn mx-2"
+										th:href="@{/time/{id}/duration(id=${timestamp.id})}">Working Hour</a>
+									<a class="btn btn-outline-success btn mx-2"
+										th:href="@{/time/{id}/approve(id=${timestamp.id})}">Approve</a>
+									<a class="btn btn-outline-danger btn mx-2"
+										th:href="@{/time/delete/{id}(id=${timestamp.id})}">Denied</a>
+								</div>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+
+				<ul class="pagination" id="pagination">
+					<!--<li class="page-item" id="previousBtn">
+						<a class="page-link" href="#" onclick="changePage(currentPage - 1)">Previous</a>
+					</li>-->
+
+					<li class="page-item"><a class="page-link" href="#">1</a></li>
+					<li class="page-item active">
+						<span class="page-link">2<span class="sr-only">(current)</span>
+						</span>
+					</li>
+					<li class="page-item"><a class="page-link" href="#">3</a></li>
+
+					<!-- Next button -->
+					<li class="page-item" id="nextBtn">
+						<a class="page-link" href="#" onclick="changePage(currentPage + 1)">Next</a>
+					</li>
+				</ul>
+			</div>
+		</section>
+	</main>
+	<!-- Main content -->
+
+	<!-- Footer -->
+	<footer class="bg-dark text-white text-center text-lg-start footer">
+		<!-- Copyright -->
+		<div class="text-center p-3">
+			© 2023 Copyright:
+			<a class="text-white" href="https://aress.com/">Aress</a>
+		</div>
+		<!-- Copyright -->
+	</footer>
+	<!-- Footer -->
+
+	<script th:if="${alertMessage}" th:inline="javascript">
+		$(document).ready(function () {
+			Swal.fire({
+				icon: 'success',
+				title: 'Timestamp Approved',
+				showConfirmButton: false,
+				timer: 1500 // Adjust the duration as needed
+			});
+		});
+	</script>
+	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.20/dist/sweetalert2.all.min.js"></script>
+
+	<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+		integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUcFk5IeZlJbw"
+		crossorigin="anonymous"></script>
+	<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"
+		integrity="sha384-eMN6PvW53FVp7ErdvTkvxXukW+T2z2b4QsxCbN5WN2Gvc8d5FwXgIijsNzwLsqQ"
+		crossorigin="anonymous"></script>
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"
+		integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8sh+Wyj4FFdN1mG/oRqi1tuwyl1i5c5GmkJfN"
+		crossorigin="anonymous"></script>
+
+	<script>
+
+		const itemsPerPage = 5; // Adjust the number of items per page as needed
+		let currentPage = 1;
+
+		// Function to generate pagination links
+		function generatePaginationLinks(totalPages) {
+			const paginationElement = document.getElementById('pagination');
+			paginationElement.innerHTML = ''; // Clear existing links
+
+			for (let i = 1; i <= totalPages; i++) {
+				const li = document.createElement('li');
+				li.className = `page-item ${i === currentPage ? 'active' : ''}`;
+				li.innerHTML = `<a class="page-link" href="#" onclick="changePage(${i})">${i}</a>`;
+				paginationElement.appendChild(li);
+			}
+		}
+
+		// Function to handle page changes
+		function changePage(pageNumber) {
+			const totalPages = Math.ceil(document.querySelectorAll('.table tbody tr').length / itemsPerPage);
+
+			if (pageNumber < 1 || pageNumber > totalPages) {
+				return;
+			}
+
+			currentPage = pageNumber;
+			showEmployees(); // Call a function to display relevant employees based on the current page
+			generatePaginationLinks(totalPages); // Regenerate pagination links after page change
+		}
+
+		// Initial function call to display employees on page load
+		showEmployees();
+
+		// Function to display relevant employees based on the current page
+		function showEmployees() {
+			const table = document.querySelector(".table");
+			const tr = table.getElementsByTagName("tr");
+
+			for (let i = 0; i < tr.length; i++) {
+				tr[i].style.display = (i >= (currentPage - 1) * itemsPerPage && i < currentPage * itemsPerPage) ? "" : "none";
+			}
+		}
+
+		function performSearch() {
+			var input, filter, table, tr, td, i, j, txtValue;
+			input = document.getElementById("searchInput");
+			filter = input.value.toUpperCase();
+			table = document.querySelector(".table");
+			tr = table.getElementsByTagName("tr");
+
+			for (i = 0; i < tr.length; i++) {
+				var display = false;
+				for (j = 0; j < tr[i].getElementsByTagName("td").length; j++) {
+					td = tr[i].getElementsByTagName("td")[j];
+					if (td) {
+						txtValue = td.textContent || td.innerText;
+						if (txtValue.toUpperCase().indexOf(filter) > -1) {
+							display = true;
+							break;  // Break the inner loop if a match is found in any column
+						}
+					}
+				}
+				tr[i].style.display = display ? "" : "none";
+			}
+		}
+	</script>
+
+
+</body>
+
+</html>
+
+
+<!--<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="UTF-8">
+	<title>Timestamp List</title>
+
+	 Add Bootstrap CSS link 
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+		integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8sh+Wyj4FFdN1mG/oRqi1tuwyl1i5c5GmkJfN" crossorigin="anonymous">
+</head>
+
+<body class="bg-light">
+	
+	
+	
+	<div class="container mt-5">
+		<h2 class="mb-4">Timestamp List</h2>
+		<table class="table table-bordered table-striped">
+			<thead class="thead-dark">
+				<tr>
+					<th>ID</th>
+					<th>User ID</th>
+					<th>Punch In Time</th>
+					<th>Punch Out Time</th>
+					<th>Actions</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr th:each="timestamp : ${timestampEntityList}">
+					<td th:text="${timestamp.id}"></td>
+					<td th:text="${timestamp.userId}"></td>
+					<td th:text="${timestamp.punchInTime}"></td>
+					<td th:text="${timestamp.punchOutTime}"></td>
+					<td>
+						<div class="btn-group" role="group">
+							<a class="btn btn-warning btn-sm" th:href="@{/edit/{id}(id=${timestamp.id})}">Edit</a>
+							<a class="btn btn-danger btn-sm" th:href="@{/delete/{id}(id=${timestamp.id})}">Delete</a>
+						</div>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+		<br>
+		<a class="btn btn-primary" th:href="@{/add}">Add New Timestamp</a>
+	</div>
+
+	 Add Bootstrap JS and Popper.js (if needed) 
+	<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+		integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUcFk5IeZlJbw"
+		crossorigin="anonymous"></script>
+	<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"
+		integrity="sha384-eMN6PvW53FVp7ErdvTkvxXukW+T2z2b4QsxCbN5WN2Gvc8d5FwXgIijsNzwLsqQ"
+		crossorigin="anonymous"></script>
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"
+		integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8sh+Wyj4FFdN1mG/oRqi1tuwyl1i5c5GmkJfN"
+		crossorigin="anonymous"></script>
+</body>
+
+</html>-->

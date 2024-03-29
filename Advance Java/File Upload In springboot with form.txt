@@ -1,0 +1,59 @@
+package com.job.controller;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
+
+import com.job.entity.User;
+import com.job.service.UserService;
+
+@Controller
+@RequestMapping(user)
+public class UserController {
+
+	@Autowired
+	private UserService userService;
+
+	saving user data
+	@PostMapping(saveUser)
+	public String saveUser(@ModelAttribute User user, Model model, @RequestParam(resume) MultipartFile file) {
+		try {
+			 storing file 			
+			user.setFile(file.getOriginalFilename());
+			File saveFile = new ClassPathResource(staticimg).getFile();
+			
+			Path path = Paths.get(saveFile.getAbsolutePath()+File.separator+file.getOriginalFilename());
+			Files.copy(file.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
+			System.out.println(File uploades succesfully!!!);
+			
+			
+			user.setRole(ROLE_USER);
+			userService.saveUser(user);
+			model.addAttribute(message, User saved successfully);
+
+			 Handle the case where file conversion failed
+			model.addAttribute(error, Failed to convert file);
+
+		} catch (IOException e) {
+			 Handle the IOException appropriately based on your application's requirements
+			e.printStackTrace();
+			model.addAttribute(error, Error processing file);
+		}
+
+		return login-page;
+	}
+
+}

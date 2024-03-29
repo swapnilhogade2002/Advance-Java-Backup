@@ -1,0 +1,20 @@
+package com.swapnil.DemoHibernate;
+
+import org.hibernate.Session;
+
+/**
+ * Hello world!
+ *
+ */
+public class App 
+{
+    public static void main( String[] args )
+    {
+       Alien telusko = new Alien();
+       telusko.setAid(101);
+       telusko.setAname("Ninja");
+       telusko.setColor("green");
+   Session sessi
+    }
+
+}
